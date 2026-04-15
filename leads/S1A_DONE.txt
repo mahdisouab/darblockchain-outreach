@@ -1,0 +1,45 @@
+S1A_DONE — Session 1A Results Summary
+Generated: 04/03/2026
+Task: Find French student blockchain/Web3/fintech clubs and BDEs for Dar Blockchain Hedera certification partnership
+
+=== TOTALS ===
+Total leads found: 16
+Leads with a contact person (name or email): 7
+Leads that are Tier 1 (score 8-10): 8
+Leads that are Tier 2 (score 6-7): 6
+Leads that are Tier 3 (score 4-5): 2
+
+=== TIER 1 LEADS (Score 8-10) ===
+1. HEC Paris — Blockchain@HEC — Co-presidents: Mehdi Touzani / Pei Li — LinkedIn: blockchain-hec
+2. ESCP Business School — Kryptosphere ESCP + ESCP Blockchain & Crypto Society — Contact: Eliodor Bessis
+3. Université Paris Dauphine PSL — Kryptosphere Dauphine — VP: Yanis Boukhari
+4. ESILV / Pôle Léonard de Vinci — Kryptosphere DeVinci — Alumni: Nasreddine Grihma
+5. IAE Lyon / Univ. Jean Moulin Lyon 3 — Kryptosphere IAE Lyon — Président: Raphaël Pautard (full team available)
+6. Télécom SudParis / IMT BS — Kryptosphere Télécom SudParis
+7. ESSEC Business School — Club blockchain (nom exact à confirmer)
+8. Blockchain@X / École Polytechnique — Research Center + Kryptosphere link
+
+=== SEARCHES PERFORMED ===
+Search 1: "club blockchain université france 2025"
+Search 2: "association web3 étudiants grandes écoles france"
+Search 3: "BDE fintech blockchain paris 2024 2025"
+Search 4: "club blockchain OR web3 site:linkedin.com france étudiant"
+Search 5: "blockchain club OR web3 club france université association"
++ 8 additional targeted sub-searches for specific schools and regions
+
+=== KEY NETWORK FOUND ===
+KRYPTOSPHERE® is the dominant French student blockchain network with 20+ chapters:
+- Founded 2017 at KEDGE Marseille
+- Active at: HEC (MBA), ESCP, Dauphine, ESILV/DeVinci, IAE Lyon, INSA Lyon,
+  Télécom SudParis, KEDGE Marseille, Rennes SB, Centrale Marseille, EM Lyon
+- LinkedIn: https://fr.linkedin.com/company/kryptosphere
+- Website: https://www.kryptosphere.org/en
+
+=== NEXT RECOMMENDED SEARCHES ===
+- Session 1B: Target Junior Enterprises (JE) at top engineering/business schools
+- Session 1C: Deep-dive individual LinkedIn profiles for current chapter presidents
+- Session 1D: BDE fintech clubs at Sciences Po, Paris 2 Assas, Toulouse Business School
+- Prioritize direct outreach to Kryptosphere national board (thibault@kryptosphere.org approach via LinkedIn)
+
+=== OUTPUT FILE ===
+C:\DarBlockchain\leads\S1A_clubs_20260304.csv

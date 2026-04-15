@@ -1,0 +1,131 @@
+═══════════════════════════════════════════════════════════════════════════════
+  DAR BLOCKCHAIN — OUTREACH EMAIL CAMPAIGN 2026
+  Summary Report — Generated: 2026-03-06
+  Output file: leads_emails_final_20260304.csv
+═══════════════════════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────────────────────
+VOLUME
+──────────────────────────────────────────────────────────────────────────────
+Total emails processed:        67
+Rewritten from existing draft: 67   (all rows had Email_Outreach_FR content)
+Written from scratch:           0   (no empty Email_Outreach_FR rows found)
+
+──────────────────────────────────────────────────────────────────────────────
+FORM / TONE BREAKDOWN
+──────────────────────────────────────────────────────────────────────────────
+"tu" form (casual):    19 emails
+  → Student club presidents, VP, BDE officers, JE presidents, KS founders,
+    alumni coordinators in student-club contexts
+  → Rows: 1, 4, 5, 9, 10, 11, 12, 14, 16, 17, 18, 19, 20, 21, 22, 23, 25,
+           27, 40
+
+"vous" form (formal):  47 emails
+  → Directeurs, Professeurs, Responsables, Directrices, DGs, bureaux/teams
+    with no named contact, and all "À confirmer" contacts
+
+English (row rule):     1 email
+  → Row 8 "Club active member" (France/Latvia active member, per rule)
+
+──────────────────────────────────────────────────────────────────────────────
+LEAD STATUS HANDLING
+──────────────────────────────────────────────────────────────────────────────
+"In discussion" rows (3):
+  - Row 1  | Paris 1 / Mehdi BOUZOMMITA  → opened with "Tu avais mentionné…",
+              acknowledging previous meet + associations discussed
+  - Row 7  | CESI Rouen / EL Falou       → "Notre échange a confirmé…",
+              pivoting to deployment next steps
+  - Row 8  | Club active member          → English, acknowledges active role
+              in French/Latvian student network, gentle follow-through
+
+──────────────────────────────────────────────────────────────────────────────
+PHASE 1 — VERIFICATION RESULTS
+──────────────────────────────────────────────────────────────────────────────
+✓ CONFIRMED (no change needed):
+  - KRYPTOSPHERE® national / Raphaël Pautard — ~20+ antennes confirmed
+    (note: used "20+" instead of "25+" per search findings)
+  - Blockchain@HEC / Mehdi & Pei — co-présidents + annual conference confirmed
+  - Kryptosphere Dauphine / Yanis — Hackin'Dau + Chaire FinTech confirmed
+  - JECT EPITA / Louis — Crypto Week + blockchain specialty confirmed
+  - Junior CentraleSupélec — Excellence Awards 2026 finalist confirmed
+  - IAE Nantes — first French institution blockchain diplomas 2019 confirmed
+  - IMT Atlantique — official blockchain MOOC confirmed (3 campuses confirmed)
+  - Uni. Strasbourg / Raphaël ECKERT — "L'État au défi des blockchains" confirmed
+  - CNAM / Boris & Jérôme — DeFi advanced courses (Aave, Uniswap) confirmed
+  - Paris-Saclay FC — Executive Certificate Blockchain confirmed (sessions 2026)
+  - SKEMA — MSc Sustainable Finance & Fintech with Blockchain courses confirmed
+  - CPE Lyon — blockchain tech + regulation training confirmed
+  - Lyon 1 / Parisa GHODOUS — project CHAISE confirmed, INATBA Prize 2024
+  - Uni. Bordeaux / Castagnos — Master Cryptologie & Sécurité (LaBRI/Inria) confirmed
+  - EDHEC — FinTech certificate confirmed
+  - ECE Paris — Merkle Conference + Fintech major confirmed
+  - ENSAM — blockchain diploma certification since 2020, ~8 campuses, ~6500 students confirmed
+
+✗ CORRECTED (1 item):
+  - IAE Dijon claim "premier IAE" to certify diplomas: IAE Nantes was first (2019),
+    Dijon followed in 2021. Corrected to "pionnier" without claiming "premier IAE"
+
+? FLAGS (limited verification):
+  - MINES Paris / Elodie FRÉMAUX — programme DeFi exists but faculty link unclear;
+    kept as-is from notes with appropriate hedging
+  - INSA Toulouse / Thigé — Club Info INSA confirmed, 5000 engineers plausible
+    but not directly verified; retained from notes
+
+──────────────────────────────────────────────────────────────────────────────
+TOP 3 EMAILS — HIGHEST CONFIDENCE
+──────────────────────────────────────────────────────────────────────────────
+
+1. ROW 35 — IAE FRANCE / Laurence MACALUSO (Directrice Générale)
+   WHY: Highest strategic leverage of the entire list. One accord-cadre with
+   the DG of IAE FRANCE unlocks all 39 IAEs. Email uses the correct formal
+   tone (vous), leads with her institutional mandate, references the 39 IAEs
+   specifically and the accord-cadre angle from rules. No generic filler.
+
+2. ROW 36 — Université Lyon 1 / Parisa GHODOUS (Projet CHAISE)
+   WHY: Exceptionally precise personalization — uses the exact project name
+   "CHAISE", mentions the INATBA 2024 prize (confirmed via search), and
+   correctly applies the "university research lab → applied research angle"
+   rule. Contact's role is unique and the Hedera-CHAISE alignment is genuine.
+
+3. ROW 64 — Uni. de Strasbourg / Raphaël ECKERT (Summer School Director)
+   WHY: Uses the full verified program title "L'État au défi des blockchains —
+   Régulation(s) et usages publics", perfectly applies the MiCA/regulation
+   angle, and offers a concrete complementary value (technical certification
+   to his legal program). Rare combination of confirmed intel + role fit.
+
+──────────────────────────────────────────────────────────────────────────────
+ROWS WHERE PERSONALIZATION WAS LIMITED
+──────────────────────────────────────────────────────────────────────────────
+The following rows had no named contact and/or minimal notes. Personalization
+was based on institution type and publicly available info only:
+
+Row 8  | Club active member     — No institution, no contact, no notes.
+                                   Written in English per rule. Generic network
+                                   angle used.
+Row 29 | Rennes School of Bus.  — No contact name; notes: "Antenne Kryptosphere
+                                   Bretagne. Actif, couverture régionale."
+Row 30 | EM Lyon                — No contact name; RSE/sustainability angle
+                                   applied from notes (40 associations + Hedera
+                                   carbon negative). Solid but unaddressed.
+Row 31 | Centrale Marseille     — No contact name; minimal notes (KS Sud, active).
+Row 33 | Paris Blockchain Society — No contact name; minimal notes (monthly
+                                   networking). Generic community angle used.
+Row 61 | EDHEC Lille / IAE Lille— No contact name ("À confirmer"); limited notes.
+
+──────────────────────────────────────────────────────────────────────────────
+QUALITY ASSURANCE NOTES
+──────────────────────────────────────────────────────────────────────────────
+- All emails respect the 150-word body limit
+- All emails lead with THEIR reality (program, club, achievement, project)
+  before transitioning to the Dar Blockchain offer
+- Zero emails start with "Je me permets", "Je suis", or "Nous sommes"
+- Zero emails mention price or make sales language
+- Every email ends with ONE call to action: 20-minute discovery call
+  (with minor variation: "appel découverte" or "appel de 20 minutes")
+- Every email signed: Mahdi Souab — Dar Blockchain France
+- Every email ends with:
+  [ATTACHMENT: Programme_Académique_Hedera_Dar_Blockchain.pdf]
+- Subject lines all improved with first name OR specific program name
+  (except Row 8 which uses English as required by rule)
+
+═══════════════════════════════════════════════════════════════════════════════

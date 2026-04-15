@@ -1,0 +1,104 @@
+S1C SESSION COMPLETE — 04/03/2026
+========================================
+
+RÉSULTATS GLOBAUX
+-----------------
+Total nouveaux leads S1C : 16
+IAE spécifiquement       : 10
+  - IAE FRANCE (réseau national)
+  - IAE Paris - Sorbonne Business School
+  - IAE Paris-Est (Créteil + Marne-la-Vallée)
+  - IAE Grenoble - INP, UGA
+  - IAE Toulouse / Toulouse School of Management (TSM)
+  - IAE Bordeaux - Université de Bordeaux
+  - IAE Dijon - Université de Bourgogne
+  - IAE Nantes - Économie et Management
+  - IAE Versailles - St-Quentin-en-Yvelines (UVSQ)
+  - IAE Lille - Université de Lille
+  - EM Strasbourg (IAE + Grande École)
+
+Grandes Écoles de Commerce  : 5
+  - EDHEC Business School
+  - NEOMA Business School
+  - Audencia Business School
+  - SKEMA Business School
+  - TBS Education (Toulouse Business School)
+
+Contacts directs trouvés   : 9 leads
+  - IAE FRANCE: Laurence MACALUSO (laurence.macaluso@iae-france.fr)
+  - IAE Paris Sorbonne: Sophie AKHTAR (+33 01 44 08 11 99) + Paula BERDUGO
+  - IAE Paris-Est: Noémie Alves, Hélène Assi (Créteil), Virginie Merle (Marne-la-Vallée)
+  - IAE Grenoble: Nadège Favet & Elise Brosse-Maron (relations-entreprises@grenoble-iae.fr)
+  - IAE Toulouse: Véronique Mazelin EEDU (05 61 12 86 49)
+  - IAE Dijon: Florence Demougeot (Resp. Communication & Relations Entreprises)
+  - EDHEC: studentfinanceclub@edhec.com
+  - NEOMA: bourses.aides.partenariats@neoma-bs.fr
+  - TBS Education: Marie-Hélène HEIT — partenariat@tbs-education.fr ← CONTACT NOMMÉ DIRECT
+
+Leads Tier 1 (score 8-10)  : 10
+  - IAE FRANCE Réseau National        (score 10)
+  - IAE Paris Sorbonne BS             (score 10)
+  - NEOMA Business School             (score 10)
+  - TBS Education                     (score 10)
+  - IAE Grenoble                      (score 9)
+  - IAE Toulouse / TSM                (score 9)
+  - EDHEC Business School             (score 9)
+  - IAE Paris-Est                     (score 8)
+  - IAE Dijon                         (score 8)
+  - SKEMA Business School             (score 8)
+
+Leads Tier 2 (score 6-7)   : 6
+  - Audencia Business School          (score 7)
+  - EM Strasbourg                     (score 7)
+  - IAE Versailles - UVSQ             (score 7)
+  - IAE Lille                         (score 7)
+  - IAE Bordeaux                      (score 6)
+  - IAE Nantes                        (score 6)
+
+INSIGHTS CLÉS
+-------------
+1. CONTACT NATIONAL PRIORITAIRE : Laurence MACALUSO (DG IAE FRANCE) ouvre accès à 39 IAE
+   simultanément via un accord-cadre national → même logique que Kryptosphere national board.
+
+2. BLOCKCHAIN PIONEERS IAE :
+   - IAE Nantes : PREMIER établissement FR à certifier diplômes sur blockchain (2019, BCdiploma)
+   - IAE Dijon : déploiement blockchain diplômes 2021, Florence Demougeot contact direct
+
+3. MEILLEURS CONTACTS POUR DÉMARCHE IMMÉDIATE :
+   → TBS Education : Marie-Hélène HEIT (Responsable Partenariats), partenariat@tbs-education.fr
+   → IAE Grenoble : relations-entreprises@grenoble-iae.fr
+   → NEOMA : bourses.aides.partenariats@neoma-bs.fr (Cryptofinance Centre + Pôle Blockchain alumni)
+   → IAE FRANCE National : laurence.macaluso@iae-france.fr
+
+4. PROGRAMMES BLOCKCHAIN/FINTECH CONFIRMÉS :
+   - TBS Education : MSc Financial Technology and Markets (blockchain, ML, Big Data)
+   - IAE Toulouse/TSM : Master Finance & IT avec blockchain
+   - NEOMA : Spécialisation Cryptofinance + MSc International
+   - SKEMA : MSc Sustainable Finance & Fintech (cours Blockchain & Crypto Assets)
+   - EDHEC : Certificat FinTech (Big Data, IA, blockchain en finance)
+
+5. INSTITUTION À ÉVITER (déjà en S1A) :
+   - KEDGE Business School → déjà dans S1A (Kryptosphere KEDGE)
+   - EM Lyon → déjà dans S1A (Kryptosphere KS EM Lyon)
+   - IAE Lyon / Université Lyon 3 → déjà dans S1A
+
+FICHIER SAUVEGARDÉ
+------------------
+Chemin : C:\DarBlockchain\leads\S1C_business_20260304.csv
+Format  : 16 lignes de données + 1 ligne d'en-tête
+Séparateur : | (pipe)
+Colonnes : 14 (Institution_Name | Category | Sub_Type | City | Region | Dept_Or_Club |
+            Contact_Person | Contact_Title | Email | LinkedIn_URL | Website | Score | Tier | Notes)
+
+TOTAL LEADS CUMULATIFS (S1A + S1B + S1C)
+-----------------------------------------
+S1A (clubs étudiants)      : 16 leads
+S1B (JE + Kryptosphere)    :  9 leads
+S1C (IAE + Business)       : 16 leads
+TOTAL                      : 41 leads qualifiés
+
+PROCHAINES ÉTAPES SUGGÉRÉES
+-----------------------------
+S1D : Écoles d'ingénieurs non encore couvertes (CentraleSupélec, Arts et Métiers, ENAC, UTT...)
+S1E : Universités publiques avec masters fintech/blockchain (Aix-Marseille, Montpellier, Bordeaux...)
+S1F : Campagnes de contact prioritaire Tier 1 (emails personnalisés, LinkedIn outreach)

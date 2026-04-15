@@ -1,0 +1,149 @@
+SESSION 1B COMPLETED — 04/03/2026
+==============================================
+
+SUMMARY
+-------
+Total new leads found : 9
+Kryptosphere national contact found : YES
+Tier1 leads : 8
+Tier2 leads : 1
+Tier3 leads : 0
+
+OUTPUT FILE
+-----------
+S1B_JE_20260304.csv (9 rows + header)
+
+==============================================
+LEAD BREAKDOWN
+==============================================
+
+1. KRYPTOSPHERE® France (National) — Score 10 — Tier1
+   Category   : Network Multiplier
+   Contact    : Raphaël Pautard (Président National 2024-2025)
+   LinkedIn   : https://www.linkedin.com/in/rapha%C3%ABl-pautard-744013220/
+   Email      : raphael@kryptosphere.fr (inferred from confirmed format r*@kryptosphere.fr)
+   NOTE       : KEY PRIORITY. One contact = access to 25+ chapters simultaneously.
+                Passation bureau 2025-2026 announced Jan 2026; new national president may
+                be in transition. Recommandation: contact Raphaël Pautard immediately
+                and ask him to forward to current 2025-2026 bureau if already transitioned.
+
+2. Junior ESSEC Conseil — Score 10 — Tier1
+   Category   : Junior Entreprise / Grande École Business
+   Contact    : Theo Mouquet (Président)
+   Email      : je@junioressec.com
+   LinkedIn   : https://fr.linkedin.com/company/junior-essec-conseil
+   NOTE       : World's #1 performing JE (founded 1967). Separate from ESSEC blockchain
+                club already in S1A. ESSEC = ESSEC certification partnership synergy.
+
+3. Junior Consulting - Sciences Po Paris — Score 10 — Tier1
+   Category   : Junior Entreprise / Grande École
+   Contact    : Théophile Duthoit (Président)
+   LinkedIn   : https://fr.linkedin.com/company/junior-consulting---sciences-po
+   Website    : junior-consulting-sciencespo.com
+   NOTE       : Sciences Po = 14 000+ étudiants, forte dimension internationale et
+                réglementaire (MiCA, DeFi policy). Excellent pour certification blockchain
+                orientée gouvernance/finance publique.
+
+4. Dauphine Junior Consulting (DJC) — Score 7 — Tier2
+   Category   : Junior Entreprise / Université
+   Contact    : Non trouvé (dernier connu: Amédée Giscard d'Estaing, 2022 — à actualiser)
+   LinkedIn   : https://fr.linkedin.com/company/dauphine-junior-consulting
+   Website    : dauphine-junior-consulting.com
+   NOTE       : Différente de KS Dauphine (déjà S1A). Dauphine a Chaire FinTech + master
+                blockchain/DeFi = synergies idéales. Score réduit faute de contact actuel.
+
+5. ENSAE Junior Études (EJE) — Score 10 — Tier1
+   Category   : Junior Entreprise / Grande École Ingénieur
+   Email      : eje@ensae.fr  |  Tél: 01.70.26.68.50
+   LinkedIn   : https://fr.linkedin.com/company/ensae-junior-etudes
+   Website    : ensaejunioretudes.com
+   NOTE       : ENSAE donne cours blockchain/crypto en partenariat avec HEC Paris.
+                Profil data science/finance quantitative = parfait pour DeFi/blockchain.
+
+6. JECT - Junior EPITA Conseil Technologies — Score 10 — Tier1
+   Category   : Junior Entreprise / Grande École Ingénieur
+   Contact    : Louis Romain (membre JECT identifié sur LinkedIn)
+   LinkedIn   : https://www.linkedin.com/in/louis-romain/
+   Website    : ject.fr
+   NOTE       : EPITA a spécialité officielle Blockchain/Monétique + Crypto Week organisée.
+                Aussi: association CRISTAL (JE alternative EPITA). Fort potentiel tech.
+
+7. Junior CentraleSupélec — Score 10 — Tier1
+   Category   : Junior Entreprise / Grande École Ingénieur
+   Email      : contact@juniorcs.fr  |  Tél: +33175316942
+   LinkedIn   : https://fr.linkedin.com/company/junior-centralesup-lec
+   Website    : juniorcs.fr
+   NOTE       : Meilleure JE de France (élue plusieurs fois). L6 Top 6 JE 2024.
+                Finaliste JE Europe Excellence Awards 2026. IA/ML/Data spécialisée.
+                CentraleSupélec = top 3 écoles d'ingénieurs France.
+
+8. Sciences Po Rennes Junior Conseil — Score 8 — Tier1
+   Category   : Junior Entreprise / Grande École
+   Contact    : Laura Samson (Présidente)
+   Email      : info@sprjuniorconseil.com
+   NOTE       : Sciences Po Rennes = IEP Rennes, réseau Sciences Po. Couverture
+                régionale Bretagne. Moins stratégique que Paris mais contact direct trouvé.
+
+9. ENSAI Junior Consultant (EjC) — Score 9 — Tier1
+   Category   : Junior Entreprise / Grande École Ingénieur
+   Contact    : Maryem G. (Présidente)
+   LinkedIn   : https://www.linkedin.com/company/ensai-junior-consultant
+   Website    : ejc.fr  |  Email format: prenom.nom@ejc.fr
+   NOTE       : ENSAI = grande école nationale statistique/data science (Rennes).
+                Profil quantitatif/finance = fort potentiel blockchain/DeFi.
+                Paul-Armand Naceur (chargé d'affaires) identifié sur LinkedIn.
+
+==============================================
+SEARCH LOG
+==============================================
+Priority : Kryptosphere national board
+  → Raphaël Pautard confirmé Président National 2024-2025
+  → Passation bureau 2025-2026 annoncée sur LinkedIn (jan 2026)
+  → Maxime Dienger = ex-président (maintenant Dev Advocate @Ripple, Londres)
+  → Thibault Langlois-Berthelot = fondateur historique
+  → Hadrien Lelache = Président KS ESSEC (antenne locale, pas national)
+
+Search 1 : "junior entreprise" blockchain OR web3 OR fintech paris france
+  → Résultats hors sujet (startups). 0 JE directes trouvées par ce vecteur.
+
+Search 2 : site:junior-entreprises.com blockchain fintech numérique
+  → Site bloqué par proxy. Alternative: recherches directes par école.
+
+Search 3 : "junior entreprise" ESSEC HEC Sciences Po Dauphine
+  → Junior ESSEC Conseil confirmée (Theo Mouquet, je@junioressec.com)
+  → Dauphine Junior Consulting confirmée
+
+Search 4 : BDE ESSEC / Sciences Po blockchain fintech
+  → Hadrien Lelache = Président KS ESSEC (contact pour S1A update)
+  → Junior Consulting Sciences Po (Théophile Duthoit) confirmée
+  → Sciences Po Rennes Junior Conseil (Laura Samson) confirmée
+
+Search 5 : JE écoles ingénieurs IA blockchain Paris Lyon
+  → ENSAE Junior Études (eje@ensae.fr) confirmée
+  → JECT - Junior EPITA Conseil Technologies confirmée
+  → Junior CentraleSupélec (contact@juniorcs.fr) confirmée
+  → ENSAI Junior Consultant confirmée
+
+==============================================
+RECOMMENDATIONS FOR NEXT SESSION
+==============================================
+1. URGENT: Contact Raphaël Pautard (Kryptosphere national) for the bulk deal
+   → Proposes certification partnership for all 25+ chapters simultaneously
+   → If already transitioned to new président, ask referral
+
+2. Hadrien Lelache (KS ESSEC) = update contact for S1A ESSEC entry
+   → LinkedIn: https://www.linkedin.com/in/hadrien-lelache/
+   → Can supplement S1A row, not counted as new lead (ESSEC already in S1A)
+
+3. Find current Dauphine Junior Consulting president (2025 unknown)
+   → Try LinkedIn search or contact form on dauphine-junior-consulting.com
+
+4. Consider expanding to: Junior-Entreprises INSA Lyon (already in S1A as school),
+   EM Lyon (already S1A), HEC Paris JE (S1A), ESCP JE
+
+5. Next session could target: IAE Nantes, IAE Bordeaux, Toulouse Business School,
+   Grenoble École de Management, and provincial engineering schools
+
+==============================================
+END OF SESSION 1B
+==============================================
