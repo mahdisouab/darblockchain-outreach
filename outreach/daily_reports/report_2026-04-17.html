@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dar Blockchain Outreach — Daily Report 2026-04-17</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; font-size: 14px; line-height: 1.6; }
+  .header { background: linear-gradient(135deg, #1a1f2e 0%, #0d1520 100%); border-bottom: 1px solid #2d3748; padding: 32px 40px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+  .header .meta { color: #718096; font-size: 13px; margin-top: 6px; }
+  .header .badge { display: inline-block; background: #1a3a5c; color: #63b3ed; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; padding: 20px; text-align: center; }
+  .kpi .value { font-size: 32px; font-weight: 700; color: #63b3ed; }
+  .kpi .label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .kpi.green .value { color: #68d391; }
+  .kpi.orange .value { color: #f6ad55; }
+  .kpi.purple .value { color: #b794f4; }
+  .section { margin-bottom: 36px; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #718096; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3748; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #718096; font-weight: 600; padding: 10px 14px; text-align: left; background: #141821; border-bottom: 1px solid #2d3748; }
+  td { padding: 12px 14px; border-bottom: 1px solid #1e2535; vertical-align: top; font-size: 13px; }
+  tr:hover td { background: #1a1f2e; }
+  .tier1 { background: #1a3a2a; color: #68d391; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+  .tier2 { background: #1a2f4a; color: #63b3ed; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+  .tier3 { background: #2a2a1a; color: #f6ad55; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+  .score { font-weight: 700; color: #63b3ed; }
+  .score.high { color: #68d391; }
+  a { color: #63b3ed; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .note-block { background: #141821; border: 1px solid #2d3748; border-left: 3px solid #63b3ed; border-radius: 6px; padding: 16px 20px; margin-bottom: 16px; }
+  .note-block.warn { border-left-color: #f6ad55; }
+  .note-block.success { border-left-color: #68d391; }
+  .note-block p { color: #a0aec0; font-size: 13px; }
+  .note-block strong { color: #e2e8f0; }
+  .rotation-table { background: #141821; border: 1px solid #2d3748; border-radius: 10px; overflow: hidden; }
+  .rot-row { display: grid; grid-template-columns: 120px 200px 1fr; gap: 0; border-bottom: 1px solid #1e2535; }
+  .rot-row:last-child { border-bottom: none; }
+  .rot-cell { padding: 10px 16px; font-size: 13px; color: #a0aec0; }
+  .rot-cell.label { font-weight: 600; color: #718096; font-size: 11px; text-transform: uppercase; }
+  .rot-cell.active { color: #68d391; font-weight: 600; }
+  .rot-cell.done { color: #4a5568; }
+  .rot-cell.next { color: #f6ad55; font-weight: 600; }
+  .linkedin-msg { background: #141821; border: 1px solid #2d3748; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+  .linkedin-msg .lp-name { font-weight: 600; color: #e2e8f0; font-size: 13px; }
+  .linkedin-msg .lp-role { color: #718096; font-size: 12px; margin-top: 2px; }
+  .linkedin-msg .lp-url { color: #63b3ed; font-size: 11px; margin-top: 4px; }
+  .linkedin-msg .lp-msg { color: #a0aec0; font-size: 12px; margin-top: 8px; font-style: italic; border-left: 2px solid #2d3748; padding-left: 10px; white-space: pre-wrap; }
+  .footer { background: #0a0d14; border-top: 1px solid #1e2535; padding: 20px 40px; color: #4a5568; font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Dar Blockchain — Outreach Daily Report</h1>
+  <div class="meta">Friday, April 17, 2026 · Pipeline v8.1 · Cloud Mode</div>
+  <div class="badge">Portugal · Associations Crypto/Tech · Type 1/4</div>
+</div>
+
+<div class="container">
+
+  <!-- KPI ROW -->
+  <div class="kpi-grid">
+    <div class="kpi green">
+      <div class="value">16</div>
+      <div class="label">New Leads</div>
+    </div>
+    <div class="kpi green">
+      <div class="value">10</div>
+      <div class="label">Email Drafts</div>
+    </div>
+    <div class="kpi">
+      <div class="value">6</div>
+      <div class="label">LinkedIn Only</div>
+    </div>
+    <div class="kpi orange">
+      <div class="value">3</div>
+      <div class="label">Tier 1</div>
+    </div>
+    <div class="kpi purple">
+      <div class="value">12</div>
+      <div class="label">Tier 2</div>
+    </div>
+  </div>
+
+  <!-- FOCUS DU JOUR -->
+  <div class="section">
+    <div class="section-title">Focus du jour</div>
+    <div class="note-block success">
+      <p><strong>Portugal x Associations Crypto/Tech (Type 1).</strong> Following the Spain cycle completion (April 14-15, all 4 types), the rotation moves to Portugal. This session covers Type 1: crypto/tech associations, blockchain student clubs, Web3 communities, fintech associations, and junior enterprises with tech focus. All outreach in English (Portugal = non-francophone European country).</p>
+    </div>
+  </div>
+
+  <!-- ROTATION STATUS -->
+  <div class="section">
+    <div class="section-title">Rotation Status</div>
+    <div class="rotation-table">
+      <div class="rot-row">
+        <div class="rot-cell label">Country</div>
+        <div class="rot-cell label">Target Type</div>
+        <div class="rot-cell label">Status</div>
+      </div>
+      <div class="rot-row">
+        <div class="rot-cell done">Spain</div>
+        <div class="rot-cell done">All 4 types</div>
+        <div class="rot-cell done">Done — April 14-15</div>
+      </div>
+      <div class="rot-row">
+        <div class="rot-cell active">Portugal</div>
+        <div class="rot-cell active">1 · Associations Crypto/Tech</div>
+        <div class="rot-cell active">Done — 2026-04-17 (this session)</div>
+      </div>
+      <div class="rot-row">
+        <div class="rot-cell next">Portugal</div>
+        <div class="rot-cell next">2 · Bootcamps</div>
+        <div class="rot-cell next">Next session</div>
+      </div>
+      <div class="rot-row">
+        <div class="rot-cell" style="color:#4a5568">Portugal</div>
+        <div class="rot-cell" style="color:#4a5568">3 · Universities</div>
+        <div class="rot-cell" style="color:#4a5568">Pending</div>
+      </div>
+      <div class="rot-row">
+        <div class="rot-cell" style="color:#4a5568">Portugal</div>
+        <div class="rot-cell" style="color:#4a5568">4 · Business Schools</div>
+        <div class="rot-cell" style="color:#4a5568">Pending</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL LEADS TABLE -->
+  <div class="section">
+    <div class="section-title">Email Leads (10) — Gmail Drafts Created</div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Institution</th><th>Contact</th><th>Email</th><th>Score</th><th>Tier</th><th>Draft ID</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><strong>APBC</strong><br><small style="color:#718096">Lisbon</small></td><td>Fred Antunes<br><small>Founder &amp; President</small></td><td>info@blockchainportugal.pt</td><td><span class="score high">8</span></td><td><span class="tier1">Tier 1</span></td><td><code style="font-size:10px;color:#4a5568">r-3600…</code></td></tr>
+        <tr><td>2</td><td><strong>CryptoMondays Lisbon</strong><br><small style="color:#718096">Lisbon</small></td><td>Marina Atarova<br><small>Co-Founder</small></td><td>info@cryptomondays.io</td><td><span class="score high">8</span></td><td><span class="tier1">Tier 1</span></td><td><code style="font-size:10px;color:#4a5568">r7997…</code></td></tr>
+        <tr><td>3</td><td><strong>Portugal Fintech</strong><br><small style="color:#718096">Lisbon</small></td><td>Simão Cruz<br><small>Co-Founder</small></td><td>info@portugalfintech.org</td><td><span class="score">7</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r-595…</code></td></tr>
+        <tr><td>4</td><td><strong>The Block Lisboa</strong><br><small style="color:#718096">Lisbon</small></td><td>General contact</td><td>hello@theblocklisboa.com</td><td><span class="score">7</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r4226…</code></td></tr>
+        <tr><td>5</td><td><strong>ETH Porto</strong><br><small style="color:#718096">Porto</small></td><td>General contact</td><td>hello@ethporto.org</td><td><span class="score">7</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r6902…</code></td></tr>
+        <tr><td>6</td><td><strong>Based in Lisbon Web3</strong><br><small style="color:#718096">Lisbon</small></td><td>General contact</td><td>basedinlisbon.xyz@gmail.com</td><td><span class="score">6</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r-4972…</code></td></tr>
+        <tr><td>7</td><td><strong>Portugal Crypto Day</strong><br><small style="color:#718096">Porto (ISEP)</small></td><td>General contact</td><td>organisers@cryptoday.pt</td><td><span class="score">6</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r-230…</code></td></tr>
+        <tr><td>8</td><td><strong>LxBWS / IST</strong><br><small style="color:#718096">Lisbon</small></td><td>Miguel Pupo Correia<br><small>Professor &amp; Organizer</small></td><td>lxbws@tecnico.ulisboa.pt</td><td><span class="score">7</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r2408…</code></td></tr>
+        <tr><td>9</td><td><strong>JUNITEC (IST)</strong><br><small style="color:#718096">Lisbon</small></td><td>Margarida Loureiro<br><small>President</small></td><td>geral@junitec.pt</td><td><span class="score">7</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r3637…</code></td></tr>
+        <tr><td>10</td><td><strong>jeKnowledge (Coimbra)</strong><br><small style="color:#718096">Coimbra</small></td><td>General contact</td><td>geral@jeknowledge.com</td><td><span class="score">6</span></td><td><span class="tier2">Tier 2</span></td><td><code style="font-size:10px;color:#4a5568">r6091…</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- LINKEDIN-ONLY LEADS -->
+  <div class="section">
+    <div class="section-title">LinkedIn Outreach (6) — Messages Ready to Copy-Paste</div>
+
+    <div class="linkedin-msg">
+      <div class="lp-name">Mahmoud Jawwad — Nova Blockchain Club (Nova SBE)</div>
+      <div class="lp-role">Founder &amp; President · Score: 9 · <span class="tier1">Tier 1</span></div>
+      <div class="lp-url"><a href="https://www.linkedin.com/in/jawwadmahmoud/" target="_blank">linkedin.com/in/jawwadmahmoud/</a></div>
+      <div class="lp-msg">Hi Mahmoud,
+
+I'm Mahdi, Head of Partnerships at Dar Blockchain. Nova Blockchain Club's mission to bring blockchain education to Nova SBE students and the Lisbon Blockchain Conference caught my attention.
+
+We offer a free blockchain certification (Hedera, backed by Google/IBM) for your members. 10,000+ trained worldwide, 250+ partner institutions.
+
+Open to a quick chat this week? calendly.com/souebmahdi/new-meeting</div>
+    </div>
+
+    <div class="linkedin-msg">
+      <div class="lp-name">Roberto Machado — Braga.Blockchain</div>
+      <div class="lp-role">CEO Subvisual / Organizer · Score: 7 · <span class="tier2">Tier 2</span></div>
+      <div class="lp-url"><a href="https://pt.linkedin.com/in/rmdmachado" target="_blank">linkedin.com/in/rmdmachado</a></div>
+      <div class="lp-msg">Hi Roberto,
+
+I'm Mahdi, Head of Partnerships at Dar Blockchain. Your work building the blockchain community in Braga through Braga.Blockchain and Subvisual, including your MIT blockchain credentials, caught my attention.
+
+We offer a free blockchain certification (Hedera, backed by Google/IBM) for your community. 10,000+ trained worldwide, 250+ partner institutions.
+
+Open to a quick chat this week? calendly.com/souebmahdi/new-meeting</div>
+    </div>
+
+    <div class="linkedin-msg">
+      <div class="lp-name">Miriam Nicolau da Costa — FIF Portugal</div>
+      <div class="lp-role">Chair Board of Directors · Score: 6 · <span class="tier2">Tier 2</span></div>
+      <div class="lp-url"><a href="https://www.linkedin.com/in/miriam-nicolau-da-costa-7598448/" target="_blank">linkedin.com/in/miriam-nicolau-da-costa-7598448/</a></div>
+      <div class="lp-msg">Hi Miriam,
+
+I'm Mahdi, Head of Partnerships at Dar Blockchain. FIF Portugal's mission to develop the fintech and insurtech ecosystem, and your role as Chair of the Board, caught my attention.
+
+We offer a free blockchain certification (Hedera, backed by Google/IBM) for fintech professionals. 10,000+ trained worldwide, 250+ partner institutions.
+
+Open to a quick chat this week? calendly.com/souebmahdi/new-meeting</div>
+    </div>
+
+    <div class="linkedin-msg">
+      <div class="lp-name">José Reis Santos — OffChain Global</div>
+      <div class="lp-role">Co-Founder · Score: 6 · <span class="tier2">Tier 2</span></div>
+      <div class="lp-url"><a href="https://www.linkedin.com/in/jose-reis-santos-25a295b/" target="_blank">linkedin.com/in/jose-reis-santos-25a295b/</a></div>
+      <div class="lp-msg">Hi José,
+
+I'm Mahdi, Head of Partnerships at Dar Blockchain. OffChain Global's events in Lisbon and your work moderating discussions on crypto regulation in Portugal caught my attention.
+
+We offer a free blockchain certification (Hedera, backed by Google/IBM) for Web3 communities. 10,000+ trained worldwide, 250+ partner institutions.
+
+Open to a quick chat this week? calendly.com/souebmahdi/new-meeting</div>
+    </div>
+
+    <div class="linkedin-msg">
+      <div class="lp-name">Mário Gago — Coimbra.Blockchain</div>
+      <div class="lp-role">CEO InspireIT / Organizer · Score: 5 · <span class="tier3">Tier 3</span></div>
+      <div class="lp-url"><a href="https://www.linkedin.com/in/mariogago/" target="_blank">linkedin.com/in/mariogago/</a></div>
+      <div class="lp-msg">Hi Mário,
+
+I'm Mahdi, Head of Partnerships at Dar Blockchain. Your work organizing Coimbra.Blockchain meetups and building the blockchain community in Coimbra caught my attention.
+
+We offer a free blockchain certification (Hedera, backed by Google/IBM) for your community members. 10,000+ trained worldwide, 250+ partner institutions.
+
+Open to a quick chat this week? calendly.com/souebmahdi/new-meeting</div>
+    </div>
+
+    <div class="linkedin-msg">
+      <div class="lp-name">António Vilaça Pacheco — Crypto Bay Portugal</div>
+      <div class="lp-role">Founder &amp; Author · Score: 6 · <span class="tier2">Tier 2</span></div>
+      <div class="lp-url">LinkedIn: Non verifié (cloud)</div>
+      <div class="lp-msg">Hi António,
+
+I'm Mahdi, Head of Partnerships at Dar Blockchain. Crypto Bay Portugal's pioneering role as one of Europe's first crypto meetups and your book on Bitcoin show deep expertise in blockchain education.
+
+We offer a free blockchain certification (Hedera, backed by Google/IBM) for your community. 10,000+ trained worldwide, 250+ partner institutions.
+
+Open to a quick chat this week? calendly.com/souebmahdi/new-meeting</div>
+    </div>
+  </div>
+
+  <!-- LINKEDIN VERIFICATION -->
+  <div class="section">
+    <div class="section-title">LinkedIn Verification (Step 2B)</div>
+    <div class="note-block warn">
+      <p><strong>Cloud mode active.</strong> LinkedIn direct WebFetch is blocked (403/connection refused). All LinkedIn URLs verified via presence in 2+ independent WebSearch results. Personal /in/ profiles confirmed for 9 contacts. 7 leads have organizational contacts only (marked "Non verifié (cloud)").</p>
+    </div>
+    <table>
+      <thead><tr><th>Metric</th><th>Count</th></tr></thead>
+      <tbody>
+        <tr><td>Total LinkedIn URLs checked</td><td>16</td></tr>
+        <tr><td>Personal /in/ profiles confirmed (2+ search results)</td><td>9</td></tr>
+        <tr><td>Marked "Non verifié (cloud)"</td><td>7</td></tr>
+        <tr><td>Replaced after failed verification</td><td>0</td></tr>
+        <tr><td>Marked "Non trouvé"</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CORRECTIONS ORTHOGRAPHIQUES -->
+  <div class="section">
+    <div class="section-title">Spelling &amp; Proofreading (Step 6)</div>
+    <div class="note-block">
+      <p><strong>All content in English</strong> (Portugal = non-francophone). No French accent rules apply. All emails verified for: correct proper nouns (institution names, contact names with Portuguese diacritics preserved), consistent Dar Blockchain description, Calendly link presence, word count within 90-120 limit, 4-bloc structure. All LinkedIn messages verified for: 50-70 word limit, 3-bloc structure, single Calendly link. No corrections needed.</p>
+    </div>
+  </div>
+
+  <!-- IMPROVEMENTS FROM YESTERDAY -->
+  <div class="section">
+    <div class="section-title">Improvements Applied from Previous Report</div>
+    <div class="note-block success">
+      <p><strong>From April 15 report:</strong> Recommendation was to start Portugal with Type 1 (Associations Crypto/Tech) targeting ANBAD, Blockchain Portugal, Fintech Portugal, and student clubs at Nova, IST, Católica. Applied: APBC (Blockchain Portugal), Portugal Fintech, Nova Blockchain Club, JUNITEC (IST), LxBWS (IST/Católica joint) all included as top leads. ANBAD not found (may not exist publicly). Added CryptoMondays Lisbon as high-value community lead.</p>
+    </div>
+  </div>
+
+  <!-- PIPELINE STEPS -->
+  <div class="section">
+    <div class="section-title">Pipeline Steps — Run Log</div>
+    <table>
+      <thead><tr><th>Step</th><th>Action</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>Read previous report</td><td style="color:#68d391">Done</td><td>report_2026-04-15.html — Spain complete, Portugal next</td></tr>
+        <tr><td>1</td><td>Read leads for dedup</td><td style="color:#68d391">Done</td><td>All existing institutions checked. No Portugal overlap.</td></tr>
+        <tr><td>2</td><td>Search 20 new leads</td><td style="color:#68d391">Done</td><td>16 qualified leads found (Portugal pool smaller than FR/ES)</td></tr>
+        <tr><td>2B</td><td>Verify LinkedIn URLs</td><td style="color:#68d391">Done</td><td>9 personal /in/ confirmed. 7 cloud-mode unverifiable.</td></tr>
+        <tr><td>3</td><td>Qualify &amp; score</td><td style="color:#68d391">Done</td><td>3 Tier 1, 12 Tier 2, 1 Tier 3</td></tr>
+        <tr><td>4</td><td>Write 10 emails</td><td style="color:#68d391">Done</td><td>All English. 90-120 words. 4-bloc. Calendly included.</td></tr>
+        <tr><td>5</td><td>Write 6 LinkedIn messages</td><td style="color:#f6ad55">6/10</td><td>Portugal crypto association pool limited for LinkedIn-only leads</td></tr>
+        <tr><td>6</td><td>Spell-check</td><td style="color:#68d391">Done</td><td>English content verified. Portuguese diacritics preserved.</td></tr>
+        <tr><td>7</td><td>Create Gmail drafts</td><td style="color:#68d391">Done</td><td>10 drafts created</td></tr>
+        <tr><td>8</td><td>Recap email</td><td style="color:#68d391">Done</td><td>Sent to souebmahdi@gmail.com</td></tr>
+        <tr><td>8B</td><td>Pre-call reminders</td><td style="color:#68d391">Done</td><td>No Calendly calls in next 24h — skipped</td></tr>
+        <tr><td>9</td><td>gsheet_import CSV</td><td style="color:#68d391">Done</td><td>gsheet_import_2026-04-17.csv — 16 rows</td></tr>
+        <tr><td>10</td><td>Update leads_master</td><td style="color:#68d391">Done</td><td>16 rows appended</td></tr>
+        <tr><td>11</td><td>HTML report</td><td style="color:#68d391">Done</td><td>This file</td></tr>
+        <tr><td>12</td><td>Git push</td><td style="color:#68d391">Done</td><td>Pushed to branch</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PRE-CALL REMINDERS -->
+  <div class="section">
+    <div class="section-title">Rappels pre-call</div>
+    <div class="note-block">
+      <p>Aucun call prévu dans les prochaines 24h. Google Calendar checked for April 17-18 — no Calendly events found.</p>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="section">
+    <div class="section-title">Recommendations for Next Sessions</div>
+    <div class="note-block success">
+      <p><strong>Next: Portugal Type 2 (Bootcamps).</strong> Suggested targets: Le Wagon Lisbon, Ironhack Lisbon, Wild Code School Portugal, Academia de Código, 42 Lisboa, Constructor Academy Portugal, Nuclio Digital School Portugal, Ubiqum Code Academy. Portugal has a growing bootcamp scene concentrated in Lisbon and Porto.</p>
+    </div>
+    <div class="note-block">
+      <p><strong>Portugal pool observation.</strong> The crypto/tech association ecosystem in Portugal is smaller than France or Spain. 16 qualified leads found (vs. 20 target). The strongest leads are APBC, CryptoMondays Lisbon, and Nova Blockchain Club (Tier 1). For Types 3-4 (universities, business schools), the pool should be larger with IST, NOVA SBE, Católica, University of Porto, University of Coimbra, ISCTE, etc.</p>
+    </div>
+    <div class="note-block warn">
+      <p><strong>LinkedIn challenge.</strong> 7 of 16 leads have only organizational/generic contacts without personal /in/ profiles. For follow-up, prioritize the 9 leads with confirmed personal profiles. Consider re-searching for named contacts at The Block Lisboa, ETH Porto, and Based in Lisbon during future sessions.</p>
+    </div>
+    <div class="note-block">
+      <p><strong>Conversion tracking.</strong> 16/16 leads (100%) are associations/communities — fully aligned with Type 1 target. 3 Tier 1 leads (19%), 12 Tier 2 (75%), 1 Tier 3 (6%). All emails 90-120 words. All LinkedIn messages 50-70 words.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Dar Blockchain Outreach Pipeline v8.1 · Generated 2026-04-17 · Portugal Type 1 complete · Next: Portugal Type 2 (Bootcamps)
+</div>
+
+</body>
+</html>
