@@ -24,3 +24,11 @@ Every day at 9:00 AM, the scheduled task:
 - Review and send the ones you approve
 - The HTML report gives you a snapshot of pipeline health
 - The master CSV is the single source of truth for all leads
+
+## Pipeline version
+
+The active skill is `outreach/SKILL_v9.md`. v9 adds three mandatory changes over v8:
+
+1. **Rotation state** — `outreach/rotation_state.json` is the single source of truth for today's country × type. The skill no longer infers rotation from yesterday's HTML report.
+2. **Hardened dedup** — Step 1 loads every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt`, and matches candidates on institution, email, AND LinkedIn slug.
+3. **Mandatory git commit + push** — Step 12 stages the day's artifacts, commits, and pushes. If the push fails, the recap email surfaces it with a bold banner. This is what keeps GitHub in sync with the actual work done.

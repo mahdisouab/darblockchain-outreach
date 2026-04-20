@@ -1,0 +1,32 @@
+{
+  "last_country": "Spain",
+  "last_type": 4,
+  "last_run_date": "2026-04-15",
+  "completed_types_in_country": [1, 2, 3, 4],
+  "country_order": [
+    "France",
+    "Belgium",
+    "Switzerland",
+    "Luxembourg",
+    "Spain",
+    "Portugal",
+    "Italy",
+    "Germany",
+    "Netherlands",
+    "UK",
+    "Nordics"
+  ],
+  "type_order": [
+    "Associations crypto/tech",
+    "Bootcamps & formations intensives",
+    "Universités & grandes écoles ingénieurs",
+    "Grandes écoles commerce, IAE, IUT"
+  ],
+  "notes": "Spain cycle complete as of 2026-04-15 (report_2026-04-15.html). Next run's Step 0A must advance to Portugal and reset completed_types_in_country to [] before starting Type 1. Seeded on 2026-04-20 as part of v8 -> v9 migration (branch claude/fix-github-registration-OWpp9).",
+  "history": [
+    {"date": "2026-04-14", "country": "Spain", "type": 1, "report": "report_2026-04-14_session3.html"},
+    {"date": "2026-04-14", "country": "Spain", "type": 2, "report": "report_2026-04-14_spain_full.html"},
+    {"date": "2026-04-14", "country": "Spain", "type": 3, "report": "report_2026-04-14_spain_full.html"},
+    {"date": "2026-04-15", "country": "Spain", "type": 4, "report": "report_2026-04-15.html"}
+  ]
+}
