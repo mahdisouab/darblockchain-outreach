@@ -25,10 +25,21 @@ Every day at 9:00 AM, the scheduled task:
 - The HTML report gives you a snapshot of pipeline health
 - The master CSV is the single source of truth for all leads
 
-## Pipeline version
+## Pipeline skill — ONE FILE ONLY
 
-The active skill is `outreach/SKILL_v9.md`. v9 adds three mandatory changes over v8:
+The authoritative skill is **`outreach/SKILL.md`**. That is the only file any routine should ever load.
 
-1. **Rotation state** — `outreach/rotation_state.json` is the single source of truth for today's country × type. The skill no longer infers rotation from yesterday's HTML report.
-2. **Hardened dedup** — Step 1 loads every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt`, and matches candidates on institution, email, AND LinkedIn slug.
-3. **Mandatory git commit + push** — Step 12 stages the day's artifacts, commits, and pushes. If the push fails, the recap email surfaces it with a bold banner. This is what keeps GitHub in sync with the actual work done.
+All previous versions (`SKILL_v2.md` through `SKILL_v9.md` and `SKILL_recap_v2.md`) have been moved to **`outreach/versions/`** as a frozen archive. Do NOT load, read, or edit anything under `outreach/versions/`. If you want to change a rule, edit `outreach/SKILL.md` directly.
+
+See `CLAUDE.md` at the repo root for the full guide.
+
+### Core safeguards in the skill
+
+1. **Step -1 Pre-Flight** — every run starts with `git pull --ff-only`. No run uses stale state.
+2. **Rotation state** — `outreach/rotation_state.json` is the single source of truth for today's country × type. Rotation is never inferred from HTML.
+3. **Hardened dedup** — Step 1 loads every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt`, and matches on institution, email, AND LinkedIn slug.
+4. **Mandatory git commit + push** — Step 12 stages the day's artifacts, commits, and pushes. If the push fails, the recap email flags it in bold.
+
+## Laptop sync
+
+Your laptop pulls automatically via `scripts/sync_local.sh`, scheduled every 10 minutes. After a routine pushes, the laptop picks up the new report within minutes with no manual action. See `scripts/README.md` for one-time setup on macOS / Linux / Windows.

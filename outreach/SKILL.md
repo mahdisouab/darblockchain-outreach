@@ -1,19 +1,42 @@
 ---
 name: dar-blockchain-daily-outreach
-description: Daily automated outreach pipeline v9 (v8 + persistent rotation state, hardened dedup, mandatory git commit/push). Adds rotation_state.json so rotation advances deterministically even when no previous-day HTML exists, reads all past CSVs at Step 1 to kill duplicate contacts, and commits + pushes every run so GitHub always reflects the latest leads and report. Keeps v8's conversion logic, 4-bloc email structure, 3-bloc LinkedIn format, FR/EN by country.
+description: Daily automated outreach pipeline. Persistent rotation state, hardened dedup, mandatory git pull at start and git push at end. This is the single authoritative skill file. Any SKILL_v*.md under outreach/versions/ is archived and must NEVER be loaded or edited. 4-bloc email structure (90-120 words), 3-bloc LinkedIn messages (50-70 words), FR/EN by country, structured segment x country rotation driven by rotation_state.json.
 ---
 
-# Dar Blockchain — Daily Outreach Pipeline (v9 — Persistent State + Mandatory Git Sync)
+# Dar Blockchain — Daily Outreach Pipeline (CANONICAL)
 
-## WHAT CHANGED FROM v8 (read before first run)
+## THIS IS THE ONLY SKILL FILE. DO NOT LOAD ANY OTHER.
 
-v8's rotation and dedup silently broke when nightly runs produced files but never pushed them to GitHub: the next morning, the pipeline couldn't see yesterday's report, stayed stuck on the same country (Portugal, repeatedly), and re-proposed contacts already emailed. v9 fixes this with three mandatory changes:
+Every previous version (`SKILL_v2.md` through `SKILL_v9.md`, and `SKILL_recap_v2.md`) has been moved to `outreach/versions/` as a historical archive. Those files are frozen and must NEVER be loaded, read, or edited by any routine. If a routine ever loads a file under `outreach/versions/`, that is a bug — fix the routine, not the archived file.
+
+The authoritative skill is this file: `outreach/SKILL.md`. All edits, improvements, and rule changes go here. One file, one source of truth.
+
+## THE THREE CORE FIXES (vs the old v8)
+
+The previous setup silently broke when nightly runs produced files but never pushed them to GitHub: the next morning, the pipeline couldn't see yesterday's report, stayed stuck on the same country (Portugal, repeatedly), and re-proposed already-contacted leads. This file fixes those three failure modes:
 
 1. **Rotation is driven by `outreach/rotation_state.json`, not by parsing HTML reports.** See Step 0.
-2. **Dedup at Step 1 must load every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt`** and build an in-memory set of `(institution_slug, email, linkedin_slug)` tuples. Any candidate matching any of the three is dropped before scoring.
-3. **Step 12 (new) is a MANDATORY git commit + push.** The run is not considered complete until the push succeeds. If the push fails, surface the error loudly in the recap email.
+2. **Dedup at Step 1 loads every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt`** and builds an in-memory set of `(institution_slug, email, linkedin_slug)` tuples. Any candidate matching any of the three is dropped before scoring.
+3. **Step 12 is a MANDATORY git commit + push.** The run is not complete until the push succeeds. If the push fails, surface the error loudly in the recap email.
 
-Everything else (conversion principles, 4-bloc email, 3-bloc LinkedIn, accents, LinkedIn verification, pre-call reminders) is identical to v8.
+A new **Pre-Flight step** (below, before Step 0) forces every routine to `git pull --ff-only` before starting, so two concurrent routines can't diverge on stale state.
+
+Everything else (conversion principles, 4-bloc email, 3-bloc LinkedIn, accents, LinkedIn verification, pre-call reminders) is unchanged.
+
+## STEP -1: PRE-FLIGHT — sync the repo before doing anything else
+
+**This is the first action of every run. No exceptions.** Two routines running in sequence (or in parallel) must both start from the same state, otherwise rotation gets confused and the same country gets hit twice.
+
+### Actions
+
+1. Identify the current git branch: `git rev-parse --abbrev-ref HEAD`.
+2. Fetch + fast-forward pull: `git fetch origin && git pull --ff-only origin <branch>`.
+3. If `git pull --ff-only` fails (non-fast-forward, merge conflict, network error): HALT the run. Surface the error in a recap-style email to souebmahdi@gmail.com with the subject "PIPELINE HALTED — git pull failed" and the git error output. Do NOT attempt to auto-resolve — the fix is human.
+4. After the pull, re-read `outreach/SKILL.md` (this file) and `outreach/rotation_state.json` from disk. Any version cached in memory from before the pull is stale and must be discarded.
+
+### Rationale
+
+The v8-era bug was that each routine ran on its local copy and never synced. Routine 1 finished, committed Italy, pushed. Routine 2 never pulled, saw only the old rotation_state.json from before Italy, and went back to Portugal. Pre-flight pull makes that impossible.
 
 You are the automated outreach engine for Dar Blockchain. Your mission: find new qualified leads in the **European educational ecosystem, with a strong focus on francophone countries** (France, Belgium, Switzerland, Luxembourg), personalize outreach emails, prepare LinkedIn messages for leads without emails, and send a full recap to Mahdi. You improve every day by reading and applying the previous day's recommendations.
 
@@ -853,6 +876,12 @@ After push, confirm the latest commit hash matches `origin/<branch>` (`git rev-p
 ### Why this step is at the END
 If committing earlier (e.g. between Step 7 and Step 8), a mid-run crash would leave a half-finished state on GitHub. Committing once at the end means each pushed commit represents a complete, verified day.
 
+### 12E — Local laptop sync (how Mahdi gets the files without pulling manually)
+
+Mahdi runs `scripts/sync_local.sh` on his laptop on a schedule (every 10 minutes; see `scripts/README.md` for one-time setup via cron / launchd / Task Scheduler). That script does a `git fetch` + `git pull --ff-only` on the laptop's clone. So after Step 12C pushes successfully, the laptop picks up the new report, CSV, and rotation_state.json within minutes — with no manual action.
+
+The pipeline does NOT need to do anything special for this: as long as Step 12C pushes to `origin/<branch>`, the laptop's scheduled sync takes it from there. Do not try to SSH into Mahdi's laptop or trigger anything remotely — that's out of scope and would be fragile.
+
 ## IMPORTANT RULES
 
 1. NEVER contact the same institution twice. Always check dedup list first.
@@ -891,4 +920,6 @@ If committing earlier (e.g. between Step 7 and Step 8), a mid-run crash would le
 29. **LINKEDIN PERSONNEL OBLIGATOIRE (20/20)** : chaque lead DOIT avoir un profil LinkedIn personnel (/in/) vérifié d'une personne appartenant à l'organisme. Les pages /company/ et /school/ ne comptent PAS. Un lead sans profil /in/ vérifié est EXCLU et remplacé par un autre lead. Utiliser les 6 stratégies de recherche multi-pass. Si aucune personne n'est trouvable sur LinkedIn pour un organisme donné, ne pas inclure cet organisme et chercher un autre lead à la place.
 30. **ROTATION STATE IS THE SOURCE OF TRUTH (v9)** : today's country and type come from `outreach/rotation_state.json` via Step 0A, NEVER from parsing yesterday's HTML. If the file is missing or corrupt, HALT the run with a clear error. Update the file in Step 11B before committing.
 31. **HARDENED DEDUP (v9)** : Step 1 MUST load every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt` and build three sets (institution_slug, email, linkedin_slug). Drop any candidate matching any set before scoring. Log counts in the HTML report.
-32. **GIT COMMIT + PUSH IS MANDATORY (v9)** : the run is not complete until Step 12 pushes successfully to `origin/<branch>`. If the push fails after 4 retries, the recap email MUST include a bold "GIT PUSH FAILED" banner with the git error output. Never silently continue.
+32. **GIT COMMIT + PUSH IS MANDATORY** : the run is not complete until Step 12 pushes successfully to `origin/<branch>`. If the push fails after 4 retries, the recap email MUST include a bold "GIT PUSH FAILED" banner with the git error output. Never silently continue.
+33. **PRE-FLIGHT PULL IS MANDATORY** : Step -1 runs `git pull --ff-only` before anything else. If the pull fails, HALT the run and email souebmahdi@gmail.com with subject "PIPELINE HALTED — git pull failed". Never skip this step, even for "just a quick run".
+34. **ONE AND ONLY ONE SKILL FILE** : the authoritative skill is `outreach/SKILL.md` (this file). Files under `outreach/versions/` (SKILL_v2.md … SKILL_v9.md, SKILL_recap_v2.md) are archives — NEVER load them, NEVER edit them, NEVER merge rules from them. If you spot a bug or want a new rule, edit THIS file only. If a routine somehow loads an archived version, fix the routine config — do not modify the archive.
