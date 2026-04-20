@@ -703,6 +703,22 @@ Lead_Status values: New, Draft created, LinkedIn only, Email needed, Sent, Opene
 
 Create: `outreach/daily_reports/report_[TODAY_DATE].html`
 
+### HOW TO BUILD THE FILE (MANDATORY — avoids stream idle timeouts)
+
+Never write the full HTML in one single `Write` call or one large `bash` heredoc — those block long enough to trigger stream idle timeouts in the cloud harness. Build the file **incrementally in 4-6 small `Bash` appends**, each under ~60 lines:
+
+1. **Pass 1** — `cat > report_[DATE].html << 'EOF'` with: doctype, `<head>`, CSS, header, KPI grid. End with `EOF`.
+2. **Pass 2** — `cat >> report_[DATE].html << 'EOF'` with: Focus du jour + Email leads table.
+3. **Pass 3** — `cat >> report_[DATE].html << 'EOF'` with: LinkedIn-only leads table.
+4. **Pass 4** — `cat >> report_[DATE].html << 'EOF'` with: LinkedIn messages (copy-paste ready).
+5. **Pass 5** — `cat >> report_[DATE].html << 'EOF'` with: Vérification LinkedIn + Corrections + Rappels pre-call + Améliorations + Recommandations + footer + `</body></html>`.
+
+After each pass, echo `wc -l` of the file to confirm progress. Each pass must finish in well under 30 seconds. If a pass feels too large, split it further — the harness tolerates many small calls but not one large one.
+
+Apply the same chunked-append pattern to any other large file generation (long CSVs, multi-section reports, etc.) going forward.
+
+### Report content
+
 The HTML report must include:
 - Date and summary stats (total new leads, emails drafted, LinkedIn contacts, by tier)
 - Table of all new leads with: Institution, Category, City, Score, Tier, Contact, Email/LinkedIn status, Décisionnaire (nom + LinkedIn vérifié)
