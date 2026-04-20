@@ -51,10 +51,22 @@ crontab -e
 */10 * * * * /ABSOLUTE/PATH/TO/darblockchain-outreach/scripts/sync_local.sh >> /tmp/darblockchain-sync.log 2>&1
 ```
 
-### One-time setup — Windows
+### One-time setup — Windows (ONE-CLICK INSTALLER)
 
-Use Task Scheduler to run `bash scripts/sync_local.sh` every 10 minutes via
-WSL or Git Bash.
+1. In **File Explorer**, navigate to `scripts\` inside your repo folder.
+2. **Double-click `install_windows.bat`**.
+
+That's it. The installer auto-detects your repo path and Git Bash location, registers a Windows scheduled task that runs every 10 minutes, and runs it once immediately to verify. Log lines show up in the terminal window. Press any key to close.
+
+Requirements: Git for Windows must be installed (you already have it since you use `git` — if not, get it from <https://git-scm.com/download/win>).
+
+Log file ends up at `C:\Users\<you>\darblockchain-sync.log` — open in Notepad any time to see sync history.
+
+To remove the task later: double-click `scripts\uninstall_windows.bat`.
+
+### One-time setup — Windows (manual, if the installer fails)
+
+Use Task Scheduler to run `bash scripts/sync_local.sh` every 10 minutes via Git Bash. See the commit history of this README for the full manual steps — but try the one-click installer first.
 
 ### Troubleshooting
 
