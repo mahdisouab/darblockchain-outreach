@@ -1,8 +1,8 @@
 {
   "last_country": "Italy",
-  "last_type": 1,
-  "last_run_date": "2026-04-20",
-  "completed_types_in_country": [1],
+  "last_type": 2,
+  "last_run_date": "2026-04-21",
+  "completed_types_in_country": [1, 2],
   "country_order": [
     "France",
     "Belgium",
@@ -22,12 +22,13 @@
     "Universités & grandes écoles ingénieurs",
     "Grandes écoles commerce, IAE, IUT"
   ],
-  "notes": "Routine 1 on 2026-04-20 completed Italy x Associations Crypto/Tech (Type 1/4), skipping Portugal per user decision. Next run MUST advance to Italy x Bootcamps (Type 2/4) per Step 0A rule: same country, next missing type. Seeded after cherry-picking commit a45520a from claude/wonderful-mccarthy-FUavs into claude/fix-github-registration-OWpp9.",
+  "notes": "Routine on 2026-04-21 completed Italy x Bootcamps & Formations Intensives (Type 2/4). 20 leads found (10 email, 10 LinkedIn-only). Next run MUST advance to Italy x Universities & Engineering Schools (Type 3/4) per Step 0A rule: same country, next missing type.",
   "history": [
     {"date": "2026-04-14", "country": "Spain", "type": 1, "report": "report_2026-04-14_session3.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 2, "report": "report_2026-04-14_spain_full.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 3, "report": "report_2026-04-14_spain_full.html"},
     {"date": "2026-04-15", "country": "Spain", "type": 4, "report": "report_2026-04-15.html"},
-    {"date": "2026-04-20", "country": "Italy", "type": 1, "report": "report_2026-04-20.html", "source_branch": "claude/wonderful-mccarthy-FUavs", "source_commit": "a45520a"}
+    {"date": "2026-04-20", "country": "Italy", "type": 1, "report": "report_2026-04-20.html", "source_branch": "claude/wonderful-mccarthy-FUavs", "source_commit": "a45520a"},
+    {"date": "2026-04-21", "country": "Italy", "type": 2, "report": "report_2026-04-21.html"}
   ]
 }
