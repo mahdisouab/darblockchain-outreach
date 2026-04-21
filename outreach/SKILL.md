@@ -23,20 +23,45 @@ A new **Pre-Flight step** (below, before Step 0) forces every routine to `git pu
 
 Everything else (conversion principles, 4-bloc email, 3-bloc LinkedIn, accents, LinkedIn verification, pre-call reminders) is unchanged.
 
-## STEP -1: PRE-FLIGHT — sync the repo before doing anything else
+## STEP -1: PRE-FLIGHT — sync the repo AND reconcile state across ALL branches
 
-**This is the first action of every run. No exceptions.** Two routines running in sequence (or in parallel) must both start from the same state, otherwise rotation gets confused and the same country gets hit twice.
+**This is the first action of every run. No exceptions.** Every routine MUST (a) fast-forward its own branch from origin, AND (b) scan every other `origin/claude/*` branch for the most-advanced `rotation_state.json`, because routines are frequently launched in parallel on separate auto-generated branches and cannot see each other otherwise.
 
 ### Actions
 
 1. Identify the current git branch: `git rev-parse --abbrev-ref HEAD`.
-2. Fetch + fast-forward pull: `git fetch origin && git pull --ff-only origin <branch>`.
-3. If `git pull --ff-only` fails (non-fast-forward, merge conflict, network error): HALT the run. Surface the error in a recap-style email to souebmahdi@gmail.com with the subject "PIPELINE HALTED — git pull failed" and the git error output. Do NOT attempt to auto-resolve — the fix is human.
-4. After the pull, re-read `outreach/SKILL.md` (this file) and `outreach/rotation_state.json` from disk. Any version cached in memory from before the pull is stale and must be discarded.
+2. Fetch ALL remote branches (not just the current one): `git fetch --all --prune`. If fetch fails due to network error, retry up to 4 times with exponential backoff (2s, 4s, 8s, 16s). If it still fails, HALT.
+3. Fast-forward pull the current branch: `git pull --ff-only origin <branch>` (if the current branch tracks an existing remote).
+4. If `git pull --ff-only` fails (non-fast-forward, merge conflict): HALT the run. Surface the error in a recap-style email to souebmahdi@gmail.com with the subject "PIPELINE HALTED — git pull failed" and the git error output. Do NOT attempt to auto-resolve — the fix is human.
+5. **Multi-branch rotation-state reconciliation (MANDATORY):** see Step -1B below. This step is what prevents parallel routines from all choosing the same country × type.
+6. After the reconciliation, re-read `outreach/SKILL.md` (this file) and `outreach/rotation_state.json` from disk. Any version cached in memory from before the reconciliation is stale and must be discarded.
+
+### STEP -1B: Scan every remote branch for the most-advanced rotation state
+
+The v8-era bug was that a routine never synced. The 2026-04-20/21 bug was that each routine ran on its OWN auto-generated branch (e.g. `claude/magical-mayer-Js9bO`), branched off the same starting commit, and so all five routines independently saw `completed_types_in_country: [1]` and all produced Italy Type 2. Pre-flight pull of the *current* branch cannot fix this — the other branches exist only on `origin/claude/*`, never merged into the current branch. The fix is to explicitly read every remote branch's copy of the file.
+
+Run this logic verbatim:
+
+1. List every remote branch: `git branch -r` (or `git for-each-ref --format='%(refname:short)' refs/remotes/origin/`).
+2. For each `origin/<branch>` (including `origin/main` and every `origin/claude/*`), attempt to read that branch's copy of `outreach/rotation_state.json`:
+   ```
+   git show origin/<branch>:outreach/rotation_state.json
+   ```
+   If the file does not exist on that branch (old branches pre-dating v9), skip it silently.
+3. Parse each JSON and collect `(branch, last_run_date, last_country, last_type, completed_types_in_country, history_length)`.
+4. Also include the LOCAL `outreach/rotation_state.json` in the same collection, tagged `local`.
+5. **Pick the "most-advanced" state** using this deterministic ordering (descending):
+   - a. Highest `last_run_date` (ISO date string compare)
+   - b. Tie-break on longest `history` array length
+   - c. Tie-break on highest `last_type` within that `last_country` on that date
+   - d. Tie-break on branch name alphabetical (for reproducibility)
+6. Log the scan results in the HTML report under a new section "Reconciliation Step -1B" listing every branch scanned, its `(last_country, last_type, last_run_date, history_length)`, and which one was selected as the winner.
+7. If the winner is NOT the local file, **overwrite the local `outreach/rotation_state.json` with the winner's content** before proceeding. This ensures Step 0A sees the most-advanced state. The overwrite is a LOCAL change only — it will be committed at the end of this run along with today's new entry.
+8. **Also scan for "today's in-flight runs" on other branches**: build a set `TODAYS_COMPLETED = { (country, type) : any branch's history contains a row with date == today_date }`. Use this set in Step 0A to skip any `(country, type)` pair another branch has already claimed for today.
 
 ### Rationale
 
-The v8-era bug was that each routine ran on its local copy and never synced. Routine 1 finished, committed Italy, pushed. Routine 2 never pulled, saw only the old rotation_state.json from before Italy, and went back to Portugal. Pre-flight pull makes that impossible.
+Pre-flight branch-pull alone protects serial runs on one branch. Multi-branch scan protects parallel runs on different branches. Both are now mandatory. If two routines launch at literally the same second (before either has pushed), one of them will still pick the same type as the other — that race is unavoidable without a remote lock. But the moment one of them pushes, every subsequent routine (even minutes later on a new branch) will see it via `-1B` and advance.
 
 You are the automated outreach engine for Dar Blockchain. Your mission: find new qualified leads in the **European educational ecosystem, with a strong focus on francophone countries** (France, Belgium, Switzerland, Luxembourg), personalize outreach emails, prepare LinkedIn messages for leads without emails, and send a full recap to Mahdi. You improve every day by reading and applying the previous day's recommendations.
 
@@ -204,6 +229,12 @@ Read `outreach/rotation_state.json`. Expected schema:
 1. If `completed_types_in_country` has fewer than 4 entries AND the last country has not exhausted its types, today's focus is the next type in `type_order` that's missing from `completed_types_in_country`, in the same country.
 2. If `completed_types_in_country` already has all 4 types, today's focus is type 1 in the next country in `country_order`, and `completed_types_in_country` resets to `[]`.
 3. If the file is missing or malformed, HALT the run and emit a clear error in the recap email: "rotation_state.json missing/corrupt — cannot advance rotation safely." Do not guess.
+4. **Anti-collision check (MANDATORY, uses `TODAYS_COMPLETED` from Step -1B):** after computing the tentative `(today_country, today_type)` per rules 1-2, check whether that exact pair appears in `TODAYS_COMPLETED` (the set of `(country, type)` pairs already claimed today by any `origin/*` branch). If yes, treat that pair as done and advance one more step:
+   - Add the claimed type to a local working copy of `completed_types_in_country` and re-apply rules 1-2 to pick the next pair.
+   - Repeat until the chosen pair is NOT in `TODAYS_COMPLETED`.
+   - Example: if Step -1B detected that another branch has already run Italy Type 2 today, and the scanned winner showed `completed_types_in_country=[1]`, the tentative pick would be Italy Type 2 — but since that's in `TODAYS_COMPLETED`, advance to Italy Type 3.
+   - This makes two late-launching routines divide work instead of duplicating it, even if one hasn't committed `rotation_state.json` yet (its history row still marks the type as claimed).
+5. If `TODAYS_COMPLETED` already contains all 4 types for the current country, advance to type 1 of the next country in `country_order` (same logic as rule 2).
 
 Record the decision in today's run as `{today_country, today_type}`. Every lead in today's generation MUST match both.
 
@@ -936,6 +967,7 @@ The pipeline does NOT need to do anything special for this: as long as Step 12C 
 29. **LINKEDIN PERSONNEL OBLIGATOIRE (20/20)** : chaque lead DOIT avoir un profil LinkedIn personnel (/in/) vérifié d'une personne appartenant à l'organisme. Les pages /company/ et /school/ ne comptent PAS. Un lead sans profil /in/ vérifié est EXCLU et remplacé par un autre lead. Utiliser les 6 stratégies de recherche multi-pass. Si aucune personne n'est trouvable sur LinkedIn pour un organisme donné, ne pas inclure cet organisme et chercher un autre lead à la place.
 30. **ROTATION STATE IS THE SOURCE OF TRUTH (v9)** : today's country and type come from `outreach/rotation_state.json` via Step 0A, NEVER from parsing yesterday's HTML. If the file is missing or corrupt, HALT the run with a clear error. Update the file in Step 11B before committing.
 31. **HARDENED DEDUP (v9)** : Step 1 MUST load every `leads_master.csv`, every `gsheet_import_*.csv`, and `EMAILS_DONE.txt` and build three sets (institution_slug, email, linkedin_slug). Drop any candidate matching any set before scoring. Log counts in the HTML report.
+32. **MULTI-BRANCH STATE RECONCILIATION (v9.1 — MANDATORY)** : Step -1B MUST `git fetch --all` and then read `outreach/rotation_state.json` from EVERY `origin/claude/*` branch AND `origin/main`. Select the most-advanced state (latest `last_run_date`, then longest `history`, then highest `last_type`) and overwrite the local file with it before Step 0A runs. Also build `TODAYS_COMPLETED` = set of `(country, type)` pairs any remote branch has already claimed for today's date, and in Step 0A advance past any claimed pair. This is non-negotiable: without it, parallel routines on auto-generated branches all see the same stale starting state and all choose the same country × type. This was the 2026-04-20/21 bug where five routines all produced Italy Type 2.
 32. **GIT COMMIT + PUSH IS MANDATORY** : the run is not complete until Step 12 pushes successfully to `origin/<branch>`. If the push fails after 4 retries, the recap email MUST include a bold "GIT PUSH FAILED" banner with the git error output. Never silently continue.
 33. **PRE-FLIGHT PULL IS MANDATORY** : Step -1 runs `git pull --ff-only` before anything else. If the pull fails, HALT the run and email souebmahdi@gmail.com with subject "PIPELINE HALTED — git pull failed". Never skip this step, even for "just a quick run".
 34. **ONE AND ONLY ONE SKILL FILE** : the authoritative skill is `outreach/SKILL.md` (this file). Files under `outreach/versions/` (SKILL_v2.md … SKILL_v9.md, SKILL_recap_v2.md) are archives — NEVER load them, NEVER edit them, NEVER merge rules from them. If you spot a bug or want a new rule, edit THIS file only. If a routine somehow loads an archived version, fix the routine config — do not modify the archive.
