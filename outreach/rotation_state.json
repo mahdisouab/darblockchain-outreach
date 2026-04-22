@@ -1,8 +1,8 @@
 {
   "last_country": "Italy",
-  "last_type": 2,
+  "last_type": 4,
   "last_run_date": "2026-04-22",
-  "completed_types_in_country": [1, 2],
+  "completed_types_in_country": [1, 2, 4],
   "country_order": [
     "France",
     "Belgium",
@@ -22,13 +22,14 @@
     "Universités & grandes écoles ingénieurs",
     "Grandes écoles commerce, IAE, IUT"
   ],
-  "notes": "Routine on 2026-04-22 completed Italy x Bootcamps (Type 2/4). 20 leads: 10 email drafts + 10 LinkedIn-only. Focus institutions include Develhope, Talent Garden, H-FARM, Digital Bros Game Academy, Edgemony, TomorrowDevs, The Blockchain Management School, Codemotion, 4Geeks Academy, ITS ICT Academy. Next run MUST advance to Italy x Universites & grandes ecoles ingenieurs (Type 3/4).",
+  "notes": "Routine on 2026-04-22 run 2 completed Italy x Grandes ecoles commerce / IAE / IUT (Type 4/4). 20 leads: 10 email drafts + 10 LinkedIn-only. Type 3 (Universites & grandes ecoles ingenieurs) was SKIPPED per explicit user instruction and remains the only unfinished Italian type. Next run MUST advance to Italy x Type 3 before rotating to Germany.",
   "history": [
     {"date": "2026-04-14", "country": "Spain", "type": 1, "report": "report_2026-04-14_session3.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 2, "report": "report_2026-04-14_spain_full.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 3, "report": "report_2026-04-14_spain_full.html"},
     {"date": "2026-04-15", "country": "Spain", "type": 4, "report": "report_2026-04-15.html"},
     {"date": "2026-04-20", "country": "Italy", "type": 1, "report": "report_2026-04-20.html", "source_branch": "claude/wonderful-mccarthy-FUavs", "source_commit": "a45520a"},
-    {"date": "2026-04-22", "country": "Italy", "type": 2, "report": "report_2026-04-22.html", "branch": "claude/magical-mayer-porwv"}
+    {"date": "2026-04-22", "country": "Italy", "type": 2, "report": "report_2026-04-22.html", "branch": "claude/magical-mayer-porwv"},
+    {"date": "2026-04-22", "country": "Italy", "type": 4, "report": "report_2026-04-22_run2.html", "branch": "claude/magical-mayer-porwv", "note": "Type 3 skipped per user instruction - still open"}
   ]
 }
