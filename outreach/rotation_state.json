@@ -30,6 +30,7 @@
     {"date": "2026-04-15", "country": "Spain", "type": 4, "report": "report_2026-04-15.html"},
     {"date": "2026-04-20", "country": "Italy", "type": 1, "report": "report_2026-04-20.html", "source_branch": "claude/wonderful-mccarthy-FUavs", "source_commit": "a45520a"},
     {"date": "2026-04-22", "country": "Italy", "type": 2, "report": "report_2026-04-22.html"},
-    {"date": "2026-04-22", "country": "Italy", "type": 3, "report": "report_2026-04-22_type3.html"}
+    {"date": "2026-04-22", "country": "Italy", "type": 3, "report": "report_2026-04-22_type3.html"},
+    {"date": "2026-04-22", "country": "Europe3 (Poland + Estonia + Czechia)", "type": 0, "report": "report_2026-04-22_europe3.html", "note": "One-off Europe expansion run, parallel to daily rotation. Does not advance Italy progression."}
   ]
 }
