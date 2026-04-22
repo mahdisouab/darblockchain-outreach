@@ -1,8 +1,8 @@
 {
   "last_country": "Germany",
-  "last_type": 2,
+  "last_type": 3,
   "last_run_date": "2026-04-22",
-  "completed_types_in_country": [2],
+  "completed_types_in_country": [2, 3],
   "country_order": [
     "France",
     "Belgium",
@@ -25,9 +25,14 @@
   "italy_status": {
     "completed_types": [1, 2],
     "pending_types": [3, 4],
-    "note": "Italy Types 3 and 4 still pending. User jumped to Germany Type 2 after Italy Type 2. Resume Italy rotation when appropriate."
+    "note": "Italy Types 3 and 4 still pending. User jumped from Italy Type 2 to Germany Type 2 then Germany Type 3. Resume Italy rotation when appropriate."
   },
-  "notes": "Run 2 on 2026-04-22 completed Germany x Bootcamps (Type 2/4) per USER OVERRIDE (skipped Italy Types 3-4 and Germany Type 1 in standard rotation). 14 leads (10 email + 4 LinkedIn-only). Germany bootcamp pool partially exhausted — major German bootcamps Le Wagon, DCI, Ironhack, Spiced, WBS Coding School, Wild Code School already in dedup from prior runs. Next rotation step depends on user guidance: resume Italy Type 3 or continue Germany Types 1/3/4.",
+  "germany_status": {
+    "completed_types": [2, 3],
+    "pending_types": [1, 4],
+    "note": "Germany Types 1 (Associations) and 4 (Business Schools) still pending."
+  },
+  "notes": "Run 3 on 2026-04-22 completed Germany x Universites & grandes ecoles ingenieurs (Type 3/4) per USER OVERRIDE. 14 leads (10 email + 4 LinkedIn-only) targeting TU Darmstadt, TU Berlin, TUM (multiple chairs), RWTH Aachen (Fraunhofer FIT), KIT, Goethe Frankfurt, JGU Mainz, University of Mannheim. Important correction: Run 2 FSBC email drafted for Philipp Sandner — he died Jan 2024. Today's Run 3 added Co-Pierre Georg (current FSBC Director since Sept 2024) as LinkedIn-only lead. Run 2 Sandner draft should be deleted or rewritten before sending.",
   "history": [
     {"date": "2026-04-14", "country": "Spain", "type": 1, "report": "report_2026-04-14_session3.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 2, "report": "report_2026-04-14_spain_full.html"},
@@ -35,6 +40,7 @@
     {"date": "2026-04-15", "country": "Spain", "type": 4, "report": "report_2026-04-15.html"},
     {"date": "2026-04-20", "country": "Italy", "type": 1, "report": "report_2026-04-20.html", "source_branch": "claude/wonderful-mccarthy-FUavs", "source_commit": "a45520a"},
     {"date": "2026-04-22", "country": "Italy", "type": 2, "report": "report_2026-04-22.html", "leads_total": 16, "leads_email": 10, "leads_linkedin_only": 6, "pool_note": "partial exhaustion"},
-    {"date": "2026-04-22", "country": "Germany", "type": 2, "report": "report_2026-04-22_run2.html", "leads_total": 14, "leads_email": 10, "leads_linkedin_only": 4, "override": "user-directed jump (skipped Italy Types 3-4 and Germany Type 1)", "pool_note": "partial exhaustion"}
+    {"date": "2026-04-22", "country": "Germany", "type": 2, "report": "report_2026-04-22_run2.html", "leads_total": 14, "leads_email": 10, "leads_linkedin_only": 4, "override": "user-directed jump (skipped Italy Types 3-4 and Germany Type 1)", "pool_note": "partial exhaustion", "data_quality_flag": "Sandner draft addresses deceased person (Jan 2024) — should be deleted/rewritten"},
+    {"date": "2026-04-22", "country": "Germany", "type": 3, "report": "report_2026-04-22_run3.html", "leads_total": 14, "leads_email": 10, "leads_linkedin_only": 4, "override": "user-directed; Italy Types 3-4 and Germany Type 1 still pending"}
   ]
 }
