@@ -1,8 +1,8 @@
 {
-  "last_country": "Italy",
+  "last_country": "Germany",
   "last_type": 2,
   "last_run_date": "2026-04-22",
-  "completed_types_in_country": [1, 2],
+  "completed_types_in_country": [2],
   "country_order": [
     "France",
     "Belgium",
@@ -22,13 +22,19 @@
     "Universités & grandes écoles ingénieurs",
     "Grandes écoles commerce, IAE, IUT"
   ],
-  "notes": "Routine on 2026-04-22 completed Italy x Bootcamps (Type 2/4). Pool partially exhausted: 16 leads vs. 20 target (10 email + 6 LinkedIn-only). Next run MUST advance to Italy x Universites & grandes ecoles ingenieurs (Type 3/4) per Step 0A rule.",
+  "italy_status": {
+    "completed_types": [1, 2],
+    "pending_types": [3, 4],
+    "note": "Italy Types 3 and 4 still pending. User jumped to Germany Type 2 after Italy Type 2. Resume Italy rotation when appropriate."
+  },
+  "notes": "Run 2 on 2026-04-22 completed Germany x Bootcamps (Type 2/4) per USER OVERRIDE (skipped Italy Types 3-4 and Germany Type 1 in standard rotation). 14 leads (10 email + 4 LinkedIn-only). Germany bootcamp pool partially exhausted — major German bootcamps Le Wagon, DCI, Ironhack, Spiced, WBS Coding School, Wild Code School already in dedup from prior runs. Next rotation step depends on user guidance: resume Italy Type 3 or continue Germany Types 1/3/4.",
   "history": [
     {"date": "2026-04-14", "country": "Spain", "type": 1, "report": "report_2026-04-14_session3.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 2, "report": "report_2026-04-14_spain_full.html"},
     {"date": "2026-04-14", "country": "Spain", "type": 3, "report": "report_2026-04-14_spain_full.html"},
     {"date": "2026-04-15", "country": "Spain", "type": 4, "report": "report_2026-04-15.html"},
     {"date": "2026-04-20", "country": "Italy", "type": 1, "report": "report_2026-04-20.html", "source_branch": "claude/wonderful-mccarthy-FUavs", "source_commit": "a45520a"},
-    {"date": "2026-04-22", "country": "Italy", "type": 2, "report": "report_2026-04-22.html", "leads_total": 16, "leads_email": 10, "leads_linkedin_only": 6, "pool_note": "partial exhaustion"}
+    {"date": "2026-04-22", "country": "Italy", "type": 2, "report": "report_2026-04-22.html", "leads_total": 16, "leads_email": 10, "leads_linkedin_only": 6, "pool_note": "partial exhaustion"},
+    {"date": "2026-04-22", "country": "Germany", "type": 2, "report": "report_2026-04-22_run2.html", "leads_total": 14, "leads_email": 10, "leads_linkedin_only": 4, "override": "user-directed jump (skipped Italy Types 3-4 and Germany Type 1)", "pool_note": "partial exhaustion"}
   ]
 }
