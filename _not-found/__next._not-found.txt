@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[42864,["/darblockchain-outreach/_next/static/chunks/0f_2uu~jb.cr1.js","/darblockchain-outreach/_next/static/chunks/0b8h.ybs7495_.js","/darblockchain-outreach/_next/static/chunks/10~8c5bt5q2zg.js","/darblockchain-outreach/_next/static/chunks/0i.bq3gkxq0sk.js"],"default"]
+3:I[46907,["/darblockchain-outreach/_next/static/chunks/0f_2uu~jb.cr1.js","/darblockchain-outreach/_next/static/chunks/0b8h.ybs7495_.js","/darblockchain-outreach/_next/static/chunks/10~8c5bt5q2zg.js","/darblockchain-outreach/_next/static/chunks/0i.bq3gkxq0sk.js"],"default"]
+4:[]
+0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W4","buildId":"pgN-pgX3R3EslUO2u6V1Y"}
