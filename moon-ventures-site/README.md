@@ -60,15 +60,36 @@ src/
     utils.ts                      cn() helper (clsx + tailwind-merge)
 ```
 
-## Déploiement Vercel
+## Déploiement
+
+### GitHub Pages (configuré par défaut)
+
+Le projet est en `output: 'export'`. Le workflow
+`.github/workflows/moon-ventures-pages.yml` construit le site et le publie
+sur GitHub Pages à chaque push qui touche `moon-ventures-site/**` sur
+`main` ou la branche de feature.
+
+Une fois la branche mergée sur `main` :
+
+1. Repo → Settings → Pages → Source = **GitHub Actions**.
+2. Le workflow se lance automatiquement (ou via Actions → Run workflow).
+3. Configurer le DNS `moon-ventures.fr` :
+   - `A` apex → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+     `185.199.111.153`
+   - `CNAME` `www` → `<user>.github.io`
+4. Le fichier `public/CNAME` (= `moon-ventures.fr`) est embarqué dans le
+   build et conserve le domaine custom à chaque déploiement.
+
+### Vercel (alternative)
 
 ```bash
 vercel             # preview
 vercel --prod      # production
 ```
 
-Une fois en production, configurer le domaine personnalisé `moon-ventures.fr`
-dans le dashboard Vercel (Settings → Domains).
+Configurer ensuite `moon-ventures.fr` dans Vercel Dashboard → Settings →
+Domains. Si tu pars sur Vercel, retire `output: 'export'` de
+`next.config.ts` pour profiter d'`next/image`, edge cache, etc.
 
 ## Charte graphique
 
