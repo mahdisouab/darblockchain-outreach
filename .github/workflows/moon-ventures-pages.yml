@@ -44,6 +44,8 @@ jobs:
 
       - name: Build static export
         run: pnpm build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /darblockchain-outreach
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

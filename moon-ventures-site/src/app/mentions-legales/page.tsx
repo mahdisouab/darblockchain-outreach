@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -79,12 +80,12 @@ export default function MentionsLegalesPage() {
             traitées conformément au Règlement Général sur la Protection des
             Données (RGPD) et à la loi Informatique et Libertés. Pour en
             savoir plus, consultez notre{" "}
-            <a
+            <Link
               href="/politique-confidentialite"
               className="text-mv-ink underline underline-offset-2 hover:text-mv-sand"
             >
               politique de confidentialité
-            </a>
+            </Link>
             .
           </p>
         </section>
