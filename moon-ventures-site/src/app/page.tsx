@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/Hero";
 import { ForWho } from "@/components/sections/ForWho";
+import { CalculatorSection } from "@/components/sections/Calculator";
 import { Process } from "@/components/sections/Process";
 import { Pricing } from "@/components/sections/Pricing";
 import { Demo } from "@/components/sections/Demo";
@@ -11,6 +12,7 @@ export default function Home() {
     <>
       <Hero />
       <ForWho />
+      <CalculatorSection />
       <Process />
       <Pricing />
       <Demo />
