@@ -38,4 +38,20 @@ leads/                             ← seed data (S1A/S1B/S1C/S1DE)
 scripts/
   sync_local.sh                    ← laptop pull script
   README.md                        ← setup instructions for laptop sync
+editing-os-starter/                ← Editing OS: separate video-editing workspace (see below)
 ```
+
+## Editing OS (`editing-os-starter/`) — separate workspace, not part of outreach
+
+`editing-os-starter/` is the Editing OS starter (AI agents that edit talking-head videos,
+built on HyperFrames). It is self-contained: its own `CLAUDE.md`, its own skills under
+`editing-os-starter/.claude/skills/`, its own `package.json`. Start with
+`editing-os-starter/LISEZMOI.md`.
+
+- **Outreach routines never read, write, or commit anything under `editing-os-starter/`.**
+- Work on videos from inside that folder (`cd editing-os-starter`), so its `CLAUDE.md`
+  and skills apply and the HyperFrames CLI resolves paths correctly.
+- Setup: `npm install`, then `npx hyperframes doctor` (needs Node 20+, FFmpeg, Chrome,
+  whisper-cpp on the machine), then `npm run os` for the dashboard on :4200.
+- `node_modules/`, `models/`, renders and raw media are gitignored there; the SFX bank
+  (`asset-library/sfx/*.wav`) and the shipped style preview posters are tracked on purpose.
