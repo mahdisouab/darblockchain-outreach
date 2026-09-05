@@ -164,35 +164,71 @@ function Whisper-Ok {
     & whisper-cli --help *> $null
     return ($LASTEXITCODE -eq 0)
 }
+function Test-Zip($path) {
+    # Une archive zip commence par « PK » et pèse plusieurs Mo. Une page HTML
+    # servie à la place (antivirus, proxy, portail) ne passe pas ce test.
+    if (-not $path -or -not (Test-Path $path)) { return $false }
+    if ((Get-Item $path).Length -lt 1MB) { return $false }
+    try { $fs = [IO.File]::OpenRead($path) } catch { return $false }
+    try {
+        $b = New-Object byte[] 2
+        $n = $fs.Read($b, 0, 2)
+        return (($n -eq 2) -and ($b[0] -eq 0x50) -and ($b[1] -eq 0x4B))
+    } finally { $fs.Close() }
+}
+function Find-LocalZip {
+    # Un zip déjà récupéré : à côté de ce script, ou dans Téléchargements, même
+    # renommé « whisper-bin-x64 (1).zip » par le navigateur.
+    $dirs = @($scriptDir, (Join-Path $env:USERPROFILE 'Downloads'))
+    try { $dirs += (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path } catch { }
+    $hit = $dirs | Where-Object { $_ -and (Test-Path $_) } |
+        ForEach-Object { Get-ChildItem -Path $_ -Filter 'whisper-bin-x64*.zip' -File -ErrorAction SilentlyContinue } |
+        Where-Object { Test-Zip $_.FullName } |
+        Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if ($hit) { return $hit.FullName }
+    return $null
+}
 if (Test-Path (Join-Path $WhisperBin 'whisper-cli.exe')) { Add-UserPath $WhisperBin }
 if (-not (Has 'whisper-cli')) {
-    # 1. un zip déjà récupéré ? (à côté de ce script, ou dans Téléchargements)
-    $zip = @(
-        (Join-Path $scriptDir $WhisperZipName),
-        (Join-Path $env:USERPROFILE "Downloads\$WhisperZipName")
-    ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+    $zip = Find-LocalZip
     if ($zip) {
         Ok "zip trouvé : $zip"
     } else {
-        # 2. sinon on le télécharge (8 Mo)
         $zip = Join-Path $env:TEMP $WhisperZipName
         Write-Host "  téléchargement de $WhisperUrl ..."
         try {
             Invoke-WebRequest -UseBasicParsing -Uri $WhisperUrl -OutFile $zip
         } catch {
             Fail "téléchargement impossible : $($_.Exception.Message)"
-            Fail "Télécharge $WhisperZipName à la main dans Téléchargements, puis relance ce script."
             $zip = $null
         }
+        if ($zip -and -not (Test-Zip $zip)) {
+            $head = ''
+            try { $head = ((Get-Content -Path $zip -TotalCount 3 -ErrorAction SilentlyContinue) -join ' ') } catch { }
+            if ($head.Length -gt 120) { $head = $head.Substring(0, 120) }
+            Fail "le fichier reçu n'est pas une archive zip. Il commence par : $head"
+            Fail 'Un antivirus (Web Shield) ou un proxy a remplacé le téléchargement en route.'
+            Remove-Item -Path $zip -Force -ErrorAction SilentlyContinue
+            $zip = $null
+        }
+        if (-not $zip) {
+            Fail "Récupère $WhisperZipName autrement (lien direct : $WhisperUrl), pose-le dans Téléchargements, puis relance ce script."
+        }
     }
-    if ($zip -and (Test-Path $zip)) {
+    if ($zip) {
         New-Item -ItemType Directory -Force -Path $WhisperDir | Out-Null
-        Expand-Archive -Force -Path $zip -DestinationPath $WhisperDir
-        if (Test-Path (Join-Path $WhisperBin 'whisper-cli.exe')) {
+        $extracted = $false
+        try {
+            Expand-Archive -Force -Path $zip -DestinationPath $WhisperDir -ErrorAction Stop
+            $extracted = $true
+        } catch {
+            Fail "archive illisible : $($_.Exception.Message)"
+        }
+        if ($extracted -and (Test-Path (Join-Path $WhisperBin 'whisper-cli.exe'))) {
             Add-UserPath $WhisperBin
             Ok "installé dans $WhisperBin (ajouté au PATH utilisateur)"
-        } else {
-            Fail "le zip ne contient pas Release\whisper-cli.exe : mauvais fichier ?"
+        } elseif ($extracted) {
+            Fail "l'archive ne contient pas Release\whisper-cli.exe : ce n'est pas whisper-bin-x64.zip ?"
         }
     }
 }

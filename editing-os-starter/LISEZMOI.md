@@ -338,6 +338,7 @@ détectent automatiquement.
 | `npx hyperframes doctor` échoue | FFmpeg ou Chrome manquant → `brew install ffmpeg` (Windows : `winget install -e --id Gyan.FFmpeg`, puis rouvrir le terminal ; Chrome introuvable → `npx hyperframes browser ensure`) |
 | `python3` n'est pas reconnu (Windows) | l'installeur python.org ne crée que `python` et `py`. Passe par `npm run verify` / `verif-montage` / `master` (le relais `scripts/py.mjs` choisit tout seul), ou installe Python depuis le Microsoft Store, qui fournit `python3` |
 | `whisper-cli not found on PATH` | le dossier `Release\` du zip whisper.cpp n'est pas dans le PATH, ou le terminal n'a pas été rouvert. Sinon pose `WHISPER_CLI=…\whisper-cli.exe`. Voir § 2 bis |
+| « le fichier reçu n'est pas une archive zip » dans `setup_windows` | l'antivirus (Web Shield) ou un proxy a remplacé le téléchargement de whisper par une page. Récupère `whisper-bin-x64.zip` autrement (autre réseau, autre machine, ou le zip fourni par Claude), pose-le dans Téléchargements, relance |
 | Des accents faux dans un rapport de vérification (Windows) | Python tourne sans UTF-8. `npm run verify` le force ; à la main, `$env:PYTHONUTF8 = 1` |
 | La transcription met des plombes | normal au 1er lancement : le modèle se télécharge (~1,6 Go) |
 | Les coupes tombent à côté | ne désactive jamais `--vad` ni `--align` sur le transcript ; ces deux options corrigent des erreurs de plusieurs secondes |
