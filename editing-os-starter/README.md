@@ -41,7 +41,8 @@ npm run os                # dashboard on http://localhost:4200
 **Windows:** install Node, FFmpeg, Chrome and Python with `winget` (`OpenJS.NodeJS.LTS`,
 `Gyan.FFmpeg`, `Google.Chrome`, `Python.Python.3.12`), then unzip `whisper-bin-x64.zip` from the
 [whisper.cpp releases](https://github.com/ggml-org/whisper.cpp/releases) and put its `Release\`
-folder on your PATH (or set `WHISPER_CLI=<path to whisper-cli.exe>`). Double-click
+folder on your PATH (or set `WHISPER_CLI=<path to whisper-cli.exe>`). Or let
+`scripts\setup_windows.bat` do all of that in one double-click. Then double-click
 `editing-os\Editing OS.bat` to start the dashboard. Step by step in `LISEZMOI.md` § 2 bis.
 
 Then open Claude Code in this folder and say:

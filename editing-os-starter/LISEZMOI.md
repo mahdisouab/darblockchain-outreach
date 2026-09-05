@@ -69,6 +69,15 @@ npm run os
 
 ## 2 bis. Sous Windows
 
+**Le plus simple : double-clique `scripts\setup_windows.bat`.** Il vérifie et
+installe ce qui manque (Node, FFmpeg, Chrome, Python, Git via `winget`,
+whisper.cpp depuis le zip précompilé), corrige le PATH, fait `npm install` et
+lance le contrôle HyperFrames. Il se relance sans risque : il ne refait que ce
+qui manque. Si le téléchargement de whisper échoue chez toi, pose
+`whisper-bin-x64.zip` dans Téléchargements (ou à côté du script) et relance.
+Ferme et rouvre tes terminaux quand il a fini : le PATH n'est relu qu'à
+l'ouverture. Ce qui suit est le détail, à la main, si tu préfères.
+
 Tout se fait dans un terminal PowerShell (ou Git Bash). Les outils système
 s'installent avec `winget`, livré avec Windows 10/11 :
 
@@ -80,21 +89,28 @@ winget install -e --id Python.Python.3.12
 winget install -e --id Git.Git          # si tu ne l'as pas déjà
 ```
 
-Ferme puis rouvre le terminal : le PATH n'est relu qu'à l'ouverture.
+Ferme puis rouvre le terminal : le PATH n'est relu qu'à l'ouverture. Tant que
+`node -v` ou `ffmpeg -version` répondent « n'est pas reconnu », c'est presque
+toujours ça (ou une installation winget qui n'est pas allée au bout : relance-la).
 
 **whisper.cpp** n'a pas de paquet winget. Les binaires précompilés sont sur
 https://github.com/ggml-org/whisper.cpp/releases (vérifié sur la version
 b4938 / v1.9.3) :
 
-1. télécharge `whisper-bin-x64.zip` (processeur seul, ~8 Mo). Variantes :
-   `whisper-blas-bin-x64.zip` (plus rapide sur CPU) ou
+1. télécharge `whisper-bin-x64.zip` (processeur seul, ~8 Mo). Lien direct si la
+   page des releases n'affiche pas ses fichiers :
+   https://github.com/ggml-org/whisper.cpp/releases/download/b4938/whisper-bin-x64.zip
+   Variantes : `whisper-blas-bin-x64.zip` (plus rapide sur CPU) ou
    `whisper-cublas-12.4.0-bin-x64.zip` (carte NVIDIA, 640 Mo) ;
-2. décompresse-le, par exemple dans `C:\Outils\whisper\` : le dossier `Release\`
-   contient `whisper-cli.exe` et ses DLL ;
+2. décompresse-le, par exemple dans `%LOCALAPPDATA%\Programs\whisper-cpp\` (c'est
+   là que l'installateur le pose) : le dossier `Release\` contient
+   `whisper-cli.exe` et ses DLL ;
 3. ajoute ce dossier `Release\` au PATH (Paramètres → « Modifier les variables
    d'environnement » → Path → Nouveau). Sans toucher au PATH, tu peux aussi
-   poser la variable `WHISPER_CLI=C:\Outils\whisper\Release\whisper-cli.exe` ;
-4. rouvre le terminal et vérifie : `whisper-cli --help`.
+   poser la variable `WHISPER_CLI=<chemin complet de whisper-cli.exe>` ;
+4. rouvre le terminal et vérifie : `whisper-cli --help`. S'il ne démarre pas
+   (DLL manquante), installe le runtime Visual C++ :
+   `winget install -e --id Microsoft.VCRedist.2015+.x64`.
 
 Le modèle (~1,6 Go) se télécharge tout seul dans `models\` au premier
 `node scripts/transcribe-whisper.mjs`, avec le `curl` livré avec Windows.

@@ -146,7 +146,8 @@ The workspace was built on macOS; every Windows difference lives in one file,
 `.cmd` that `spawn()` refuses without a shell), reveal in Explorer, Recycle Bin in
 `prune.mjs`. `npm run verify|verif-montage|master` go through `scripts/py.mjs`, which also
 forces `PYTHONUTF8=1` so French transcripts keep their accents. Launcher:
-`editing-os\Editing OS.bat`. Shell commands in this file and in the skills assume a POSIX
+`editing-os\Editing OS.bat`; one-click setup: `scripts\setup_windows.bat`. Shell commands in this
+file and in the skills assume a POSIX
 shell: run them from Git Bash (what Claude Code uses on Windows). Setup steps and the
 whisper.cpp prebuilt binaries: `LISEZMOI.md` § 2 bis.
 
