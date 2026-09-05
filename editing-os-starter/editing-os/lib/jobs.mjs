@@ -16,6 +16,8 @@ import { spawn } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
 
+import { findPython, pythonEnv, hyperframesCli } from '../../scripts/lib/platform.mjs';
+
 const MAX_LINES = 400; // ce qu'on garde d'un log, en mémoire
 const MAX_JOBS = 40; // historique conservé
 
@@ -52,29 +54,48 @@ export function actionCatalog(root, ctx) {
   const rc = (ctx && ctx.render) || {};
   const PUBLISH_BITRATE = rc.videoBitrate || '12M';
 
-  const lint = { cmd: 'npx', args: ['hyperframes', 'lint'], cwd: 'project', label: 'lint' };
+  // La CLI HyperFrames et Python, résolus pour cette machine (voir
+  // scripts/lib/platform.mjs) : `npx` et `python3` ne se lancent pas tels
+  // quels sous Windows. `show` est le nom affiché dans le journal, `skip` le
+  // nombre d'arguments techniques (chemin du binaire) qu'on n'y montre pas, et
+  // `missing` le message rendu à la place d'un « spawn ENOENT » sans contexte.
+  const hf = hyperframesCli() || {
+    cmd: 'npx', args: ['hyperframes'],
+    missing: 'HyperFrames n\'est pas installé : lance `npm install` à la racine du workspace.',
+  };
+  const hfStep = (tail, extra) => ({
+    cmd: hf.cmd, args: [...hf.args, ...tail], show: 'hyperframes', skip: hf.args.length,
+    missing: hf.missing, ...extra,
+  });
+  const lint = hfStep(['lint'], { cwd: 'project', label: 'lint' });
   const render = (quality, publish, outOverride) => {
     const out = outOverride || (base ? `renders/${base}-${quality}.mp4` : `renders/${quality}.mp4`);
-    const args = ['hyperframes', 'render', '--quality', publish ? (rc.quality || 'high') : quality,
+    const args = ['render', '--quality', publish ? (rc.quality || 'high') : quality,
       '--workers', 'auto', '--browser-gpu', '--gpu', '-o', out];
-    if (comp) args.splice(2, 0, '-c', `compositions/${comp}.html`);
+    if (comp) args.splice(1, 0, '-c', `compositions/${comp}.html`);
     if (rc.fps) args.push('-f', String(rc.fps));
     // débit imposé sur le chemin de publication seulement : sur un draft on
     // veut la vitesse, pas la finesse
     if (publish && PUBLISH_BITRATE) args.push('--video-bitrate', String(PUBLISH_BITRATE));
-    return {
-      cmd: 'npx', args, cwd: 'project',
+    return hfStep(args, {
+      cwd: 'project',
       label: (publish ? 'rendu publication' : `rendu ${quality}`) + (base ? ` — ${base}` : ''),
       produces: out,
-    };
+    });
   };
   // Viser un fichier précis quand on en connaît un : --project prendrait le
   // rendu le plus récent du projet, qui peut appartenir à un autre livrable.
+  const python = findPython() || {
+    cmd: 'python3', args: [],
+    missing: 'Python 3 introuvable (python3, python ou py). Installe-le et rouvre le hub.',
+  };
   const py = (script, extra, label, file) => ({
-    cmd: 'python3',
-    args: file
+    cmd: python.cmd,
+    args: [...python.args, ...(file
       ? [path.join(root, 'scripts', script), '{projdir}/' + file, ...extra]
-      : [path.join(root, 'scripts', script), '--project', '{slug}', ...extra],
+      : [path.join(root, 'scripts', script), '--project', '{slug}', ...extra])],
+    show: 'python3', skip: python.args.length, missing: python.missing,
+    env: pythonEnv(),
     cwd: 'root',
     label,
   });
@@ -340,11 +361,19 @@ export function startJob(root, slug, actionId, onDone, ctx) {
     const args = step.args.map((a) => a.replace('{slug}', slug).replace('{projdir}', projDir));
     const cwd = step.cwd === 'project' ? projDir : root;
     push(`-- ${step.label} --`);
-    push(`$ ${step.cmd} ${args.map((a) => (a.startsWith(root) ? path.relative(root, a) : a)).join(' ')}`);
+    if (step.missing) {
+      push(step.missing);
+      finish('failed', -1);
+      return;
+    }
+    const shown = args.slice(step.skip || 0).map((a) => (a.startsWith(root) ? path.relative(root, a) : a));
+    push(`$ ${step.show || step.cmd} ${shown.join(' ')}`);
 
     // stdin fermé : le CLI du monteur attend 3 s une entrée qui ne viendra
     // jamais avant de démarrer, et aucune étape d'ici ne lit l'entrée standard.
-    const child = spawn(step.cmd, args, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(step.cmd, args, {
+      cwd, env: step.env || process.env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true,
+    });
     job.child = child;
 
     // Un agent qui attend une réponse qui ne viendra jamais bloquerait le

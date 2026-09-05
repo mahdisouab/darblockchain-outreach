@@ -17,7 +17,7 @@
 // flubs.json: [{ "start": <src s>, "end": <src s>, "reason": "..." }]
 
 import fs from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const args = process.argv.slice(2);
 const [edlPath, srcVideo, outVideo] = args;
@@ -31,9 +31,14 @@ if (!edlPath || !srcVideo || !outVideo) {
   process.exit(2);
 }
 
-const stderr = execFileSync('sh', ['-c',
-  `ffmpeg -hide_banner -i "${srcVideo.replace(/"/g, '\\"')}" -vn -af silencedetect=noise=${NOISE}dB:d=${SIL_MIN} -f null - 2>&1`],
-  { maxBuffer: 64 * 1024 * 1024 }).toString();
+// ffmpeg lancé directement (pas de `sh`, absent sous Windows) ; silencedetect
+// écrit son rapport sur stderr.
+const sd = spawnSync('ffmpeg',
+  ['-hide_banner', '-nostdin', '-i', srcVideo, '-vn', '-af', `silencedetect=noise=${NOISE}dB:d=${SIL_MIN}`, '-f', 'null', '-'],
+  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+if (sd.error) throw sd.error;
+if (sd.status !== 0) throw new Error(`ffmpeg silencedetect failed (exit ${sd.status}):\n${sd.stderr}`);
+const stderr = sd.stderr || '';
 const sStarts = [...stderr.matchAll(/silence_start: ([\d.]+)/g)].map(m => +m[1]);
 const sEnds = [...stderr.matchAll(/silence_end: ([\d.]+)/g)].map(m => +m[1]);
 const silences = sStarts.map((s, i) => ({ start: s, end: sEnds[i] ?? s + SIL_MIN })).filter(s => s.end > s.start);

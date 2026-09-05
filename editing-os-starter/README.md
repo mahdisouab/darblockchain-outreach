@@ -32,11 +32,17 @@ Two things it does that other tools don't:
 ```bash
 git clone <your-fork-url> editing-os && cd editing-os
 npm install
-brew install whisper-cpp  # local transcription, no API key needed
+brew install whisper-cpp  # local transcription, no API key needed (Windows: see below)
 cp .env.example .env      # optional keys only (b-roll providers)
 npx hyperframes doctor    # checks Node, FFmpeg, Chrome
 npm run os                # dashboard on http://localhost:4200
 ```
+
+**Windows:** install Node, FFmpeg, Chrome and Python with `winget` (`OpenJS.NodeJS.LTS`,
+`Gyan.FFmpeg`, `Google.Chrome`, `Python.Python.3.12`), then unzip `whisper-bin-x64.zip` from the
+[whisper.cpp releases](https://github.com/ggml-org/whisper.cpp/releases) and put its `Release\`
+folder on your PATH (or set `WHISPER_CLI=<path to whisper-cli.exe>`). Double-click
+`editing-os\Editing OS.bat` to start the dashboard. Step by step in `LISEZMOI.md` § 2 bis.
 
 Then open Claude Code in this folder and say:
 
@@ -111,8 +117,9 @@ stylesheet instead of fighting a timeline.
 
 ## Notes and limits
 
-- macOS is the tested path. Nothing is deliberately platform-locked, but the render flags
-  and the "Reveal in Finder" button assume a Mac.
+- macOS is the original, battle-tested path. Windows support (launcher, `python`/`npx`/`whisper-cli`
+  lookup, Recycle Bin, Explorer reveal) was added on 2026-09-05 and validated on Linux plus code
+  review, not yet on a Windows machine. Platform differences live in `scripts/lib/platform.mjs`.
 - B-roll (Scout) is the newest agent and the least battle-tested of the five.
 - `verify-cuts` has no direct on-disk artifact yet, so the dashboard infers it from a clean
   render. If a `verify-report.md` lands it gets picked up as direct evidence automatically.

@@ -1,0 +1,7 @@
+# Fins de ligne : les scripts Windows en CRLF, les scripts Unix en LF,
+# quel que soit le réglage core.autocrlf de la machine qui fait le checkout.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.command text eol=lf
+*.sh text eol=lf

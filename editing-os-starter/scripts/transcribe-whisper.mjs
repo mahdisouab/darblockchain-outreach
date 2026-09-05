@@ -33,6 +33,8 @@ import { argv, exit, env, stderr } from "node:process";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 
+import { findOnPath } from "./lib/platform.mjs";
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const WORKSPACE_ROOT = resolve(SCRIPT_DIR, "..");
 const MODEL_DIR = join(WORKSPACE_ROOT, "models");
@@ -110,17 +112,23 @@ const inputStem = basename(inputPath, extname(inputPath));
 const outputPath = resolve(opts.output ?? join(inputDir, `${inputStem}.json`));
 
 // --- locate whisper-cli ---
+// PATH search done in Node (see lib/platform.mjs): `which` does not exist on
+// Windows. WHISPER_CLI=<path> points at a binary that is not on the PATH.
 const whisperBin = (() => {
+  if (env.WHISPER_CLI) return findOnPath(env.WHISPER_CLI);
   for (const candidate of ["whisper-cli", "whisper-cpp", "main"]) {
-    const which = spawnSync("which", [candidate], { encoding: "utf8" });
-    if (which.status === 0) return which.stdout.trim();
+    const found = findOnPath(candidate);
+    if (found) return found;
   }
   return null;
 })();
 if (!whisperBin) {
   die(
-    "whisper-cli not found on PATH.\n" +
-      "Install it with:  brew install whisper-cpp\n" +
+    (env.WHISPER_CLI ? `WHISPER_CLI is set but not found: ${env.WHISPER_CLI}\n` : "whisper-cli not found on PATH.\n") +
+      (process.platform === "win32"
+        ? "Windows: download whisper-bin-x64.zip from https://github.com/ggml-org/whisper.cpp/releases, unzip it,\n" +
+          "and add the folder containing whisper-cli.exe to your PATH (or set WHISPER_CLI=C:\\path\\to\\whisper-cli.exe).\n"
+        : "Install it with:  brew install whisper-cpp\n") +
       "(or use the hosted transcriber: node scripts/transcribe-elevenlabs.mjs)",
   );
 }

@@ -5,7 +5,7 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFile, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 
 import { scanWorkspace, buildProjectDetail, scanLibraries, scanReviews, scanStyle, pickLatestRender, ROOT } from './lib/scan.mjs';
 import { buildThumb } from './lib/thumbs.mjs';
@@ -19,6 +19,7 @@ import { open as openStudio, close as closeStudio, list as listStudios } from '.
 import { startJob, getJob, listJobs, listActions, stopJob } from './lib/jobs.mjs';
 import { buildActivity } from './lib/git.mjs';
 import { buildAgentsState } from './lib/agents.mjs';
+import { revealPath } from '../scripts/lib/platform.mjs';
 
 /* Note : le hub n'injecte PAS le moteur HyperFrames dans les compositions qu'il
    sert. Il l'a fait un temps, pour un éditeur maison depuis remplacé par le
@@ -254,7 +255,8 @@ async function handleReveal(req, res) {
     sendError(res, 404, 'Path does not exist');
     return;
   }
-  execFile('open', ['-R', p], (err) => {
+  // Finder, Explorateur Windows ou gestionnaire par défaut : voir platform.mjs.
+  revealPath(p, (err) => {
     if (err) sendError(res, 500, 'Failed to reveal');
     else sendJSON(res, 200, { ok: true });
   });

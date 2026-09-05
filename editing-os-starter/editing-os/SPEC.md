@@ -40,7 +40,7 @@ No em dashes anywhere in UI copy. No emoji. Tabular numerals for sizes/dates.
 
 ### b) Project Detail (`#/project/<slug>`)
 - Header: name, slug, family, archetype, absolute path with Copy button and
-  "Reveal in Finder" button (POST `/api/reveal`).
+  "Reveal in folder" button (POST `/api/reveal`).
 - Pipeline rail expanded: one row per stage with status, and the evidence list
   (file path, kind direct/proxy, mtime) under each stage.
 - Renders table: file name, size, mtime, kind, per-render stale flag. Sorted mtime desc.

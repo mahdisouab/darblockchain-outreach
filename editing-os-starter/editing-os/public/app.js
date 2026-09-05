@@ -1205,7 +1205,7 @@
         "</div>" +
         '<div class="detail-path"><span class="p">' + esc(p.absPath || "") + "</span>" +
           '<button type="button" class="btn btn-sm" id="copy-path">Copy path</button>' +
-          '<button type="button" class="btn btn-sm" id="reveal">Reveal in Finder</button>' +
+          '<button type="button" class="btn btn-sm" id="reveal">Reveal in folder</button>' +
         "</div>" +
       "</div>" +
 
@@ -1295,7 +1295,7 @@
     var revealBtn = document.getElementById("reveal");
     if (revealBtn) revealBtn.onclick = function () {
       revealBtn.disabled = true;
-      postReveal(p.absPath).then(function () { toast("Revealed in Finder"); })
+      postReveal(p.absPath).then(function () { toast("Revealed in folder"); })
         .catch(function (e) { toast("Reveal failed: " + (e.message || "")); })
         .then(function () { revealBtn.disabled = false; });
     };

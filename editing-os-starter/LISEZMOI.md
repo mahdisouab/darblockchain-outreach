@@ -17,13 +17,13 @@ coupes tombent sur la syllabe et pas à côté.
 
 | | Quoi | Vérifier / installer |
 |---|---|---|
-| Machine | **macOS** (Apple Silicon idéalement) | c'est le chemin testé ; Linux devrait marcher, Windows non testé |
-| | **Node 20 ou plus** | `node -v` — sinon https://nodejs.org |
-| | **FFmpeg** | `ffmpeg -version` — sinon `brew install ffmpeg` |
-| | **Google Chrome** | c'est lui qui fait le rendu des compositions |
-| | **whisper.cpp** | `brew install whisper-cpp` (transcription locale, gratuite) |
-| | **Python 3** | déjà présent sur macOS — sert aux scripts de vérification |
-| Outil | **Claude Code** | c'est l'interface : les agents sont des skills Claude Code |
+| Machine | **macOS** ou **Windows 10/11** | macOS est le chemin d'origine ; Windows est pris en charge depuis le 05/09 (voir § 2 bis) ; Linux devrait marcher |
+| | **Node 20 ou plus** | `node -v` — sinon https://nodejs.org (Windows : `winget install -e --id OpenJS.NodeJS.LTS`) |
+| | **FFmpeg** | `ffmpeg -version` — sinon `brew install ffmpeg` (Windows : `winget install -e --id Gyan.FFmpeg`) |
+| | **Google Chrome** | c'est lui qui fait le rendu des compositions (Windows : `winget install -e --id Google.Chrome`) |
+| | **whisper.cpp** | `brew install whisper-cpp` (transcription locale, gratuite) — Windows : binaires précompilés, voir § 2 bis |
+| | **Python 3** | déjà présent sur macOS — Windows : `winget install -e --id Python.Python.3.12` — sert aux scripts de vérification |
+| Outil | **Claude Code** | c'est l'interface : les agents sont des skills Claude Code (sous Windows, garde Git for Windows installé : Claude Code exécute ses commandes dans Git Bash) |
 
 Pas de clé API obligatoire. La transcription tourne en local ; le modèle whisper
 (~1,6 Go) se télécharge tout seul dans `models/` au premier usage.
@@ -62,7 +62,67 @@ npm run os
 
 → http://localhost:4200
 
-(Sur Mac tu peux aussi double-cliquer `editing-os/Editing OS.command`.)
+(Sur Mac tu peux aussi double-cliquer `editing-os/Editing OS.command` ; sous Windows,
+`editing-os\Editing OS.bat` — voir § 2 bis.)
+
+---
+
+## 2 bis. Sous Windows
+
+Tout se fait dans un terminal PowerShell (ou Git Bash). Les outils système
+s'installent avec `winget`, livré avec Windows 10/11 :
+
+```powershell
+winget install -e --id OpenJS.NodeJS.LTS
+winget install -e --id Gyan.FFmpeg
+winget install -e --id Google.Chrome
+winget install -e --id Python.Python.3.12
+winget install -e --id Git.Git          # si tu ne l'as pas déjà
+```
+
+Ferme puis rouvre le terminal : le PATH n'est relu qu'à l'ouverture.
+
+**whisper.cpp** n'a pas de paquet winget. Les binaires précompilés sont sur
+https://github.com/ggml-org/whisper.cpp/releases (vérifié sur la version
+b4938 / v1.9.3) :
+
+1. télécharge `whisper-bin-x64.zip` (processeur seul, ~8 Mo). Variantes :
+   `whisper-blas-bin-x64.zip` (plus rapide sur CPU) ou
+   `whisper-cublas-12.4.0-bin-x64.zip` (carte NVIDIA, 640 Mo) ;
+2. décompresse-le, par exemple dans `C:\Outils\whisper\` : le dossier `Release\`
+   contient `whisper-cli.exe` et ses DLL ;
+3. ajoute ce dossier `Release\` au PATH (Paramètres → « Modifier les variables
+   d'environnement » → Path → Nouveau). Sans toucher au PATH, tu peux aussi
+   poser la variable `WHISPER_CLI=C:\Outils\whisper\Release\whisper-cli.exe` ;
+4. rouvre le terminal et vérifie : `whisper-cli --help`.
+
+Le modèle (~1,6 Go) se télécharge tout seul dans `models\` au premier
+`node scripts/transcribe-whisper.mjs`, avec le `curl` livré avec Windows.
+
+Ensuite comme sur Mac : `npm install`, `npx hyperframes doctor`, `npm run os`.
+Le lanceur `editing-os\Editing OS.bat` enchaîne les trois : il installe les
+dépendances la première fois, démarre le hub et ouvre le navigateur. Ferme sa
+fenêtre pour arrêter le hub.
+
+Ce qui a été adapté pour Windows le 05/09, utile si un message te renvoie ici :
+
+- `npm run verify`, `verif-montage` et `master` passent par `scripts/py.mjs`,
+  qui trouve `python3`, `python` ou `py -3` et force l'UTF-8. Sans ça, Python
+  lit les transcripts en cp1252 sous Windows et les accents tombent faux. Pour
+  lancer un script Python à la main : `$env:PYTHONUTF8 = 1` dans PowerShell
+  (ou `setx PYTHONUTF8 1` une fois pour toutes), puis `python scripts\autoverify.py …`.
+- Le hub lance la CLI HyperFrames avec `node` directement, jamais `npx`, qui ne
+  se lance pas sans shell sous Windows ; Python comme ci-dessus.
+- « Ne garder que les 3 derniers » envoie à la Corbeille Windows ; « Révéler »
+  ouvre l'Explorateur sur le fichier.
+- `scripts/transcribe-whisper.mjs` cherche `whisper-cli.exe` sur le PATH
+  lui-même (`which` n'existe pas ici) et lit `WHISPER_CLI`.
+- Les deux scripts de `cut-silences` qui passaient par `sh` appellent `ffmpeg`
+  directement.
+
+Ces adaptations ont été validées sous Linux et relues pour Windows, pas encore
+exécutées sur une machine Windows. Si quelque chose casse, le message d'erreur
+dit désormais quoi installer.
 
 ---
 
@@ -259,7 +319,10 @@ détectent automatiquement.
 
 | Symptôme | Cause probable |
 |---|---|
-| `npx hyperframes doctor` échoue | FFmpeg ou Chrome manquant → `brew install ffmpeg` |
+| `npx hyperframes doctor` échoue | FFmpeg ou Chrome manquant → `brew install ffmpeg` (Windows : `winget install -e --id Gyan.FFmpeg`, puis rouvrir le terminal ; Chrome introuvable → `npx hyperframes browser ensure`) |
+| `python3` n'est pas reconnu (Windows) | l'installeur python.org ne crée que `python` et `py`. Passe par `npm run verify` / `verif-montage` / `master` (le relais `scripts/py.mjs` choisit tout seul), ou installe Python depuis le Microsoft Store, qui fournit `python3` |
+| `whisper-cli not found on PATH` | le dossier `Release\` du zip whisper.cpp n'est pas dans le PATH, ou le terminal n'a pas été rouvert. Sinon pose `WHISPER_CLI=…\whisper-cli.exe`. Voir § 2 bis |
+| Des accents faux dans un rapport de vérification (Windows) | Python tourne sans UTF-8. `npm run verify` le force ; à la main, `$env:PYTHONUTF8 = 1` |
 | La transcription met des plombes | normal au 1er lancement : le modèle se télécharge (~1,6 Go) |
 | Les coupes tombent à côté | ne désactive jamais `--vad` ni `--align` sur le transcript ; ces deux options corrigent des erreurs de plusieurs secondes |
 | `lint` passe mais le rendu est cassé | « lint passe » ≠ « le design marche ». Extrait une image par scène et regarde-la vraiment. C'est écrit dans `CLAUDE.md`, c'est la règle la plus rentable du workspace |

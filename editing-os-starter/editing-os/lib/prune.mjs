@@ -21,6 +21,9 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+
+import { isWindows } from '../../scripts/lib/platform.mjs';
 
 import { groupRenders } from './deliverables.mjs';
 
@@ -82,6 +85,34 @@ function trashDir() {
   return fallback;
 }
 
+// Corbeille Windows. Il n'y a pas de dossier à cibler comme ~/.Trash : on
+// passe par l'API système, via PowerShell (livré avec Windows). Le fichier
+// apparaît dans la Corbeille avec son emplacement d'origine, restaurable.
+function recycleWindows(abs) {
+  const literal = abs.replace(/'/g, "''");
+  const script = 'Add-Type -AssemblyName Microsoft.VisualBasic; '
+    + `[Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile('${literal}', 'OnlyErrorDialogs', 'SendToRecycleBin')`;
+  const r = spawnSync('powershell.exe',
+    ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script],
+    { encoding: 'utf8', windowsHide: true, timeout: 30000 });
+  if (r.error) throw r.error;
+  if (r.status !== 0) throw new Error((r.stderr || 'powershell: échec').trim().split(/\r?\n/)[0]);
+  if (fs.existsSync(abs)) throw new Error('le fichier est toujours là');
+}
+
+// Écarte un fichier : Corbeille Windows, sinon dossier corbeille (voir trashDir).
+function discard(abs, dir, name) {
+  if (isWindows) {
+    try {
+      recycleWindows(abs);
+      return;
+    } catch {
+      /* PowerShell indisponible ou refusé : on retombe sur le dossier */
+    }
+  }
+  fs.renameSync(abs, freeName(dir || trashDir(), name));
+}
+
 function freeName(dir, base) {
   let name = base;
   let i = 2;
@@ -98,14 +129,14 @@ function freeName(dir, base) {
  * Le sidecar .meta.json d'un rendu suit son MP4 — sinon il reste orphelin.
  */
 export function applyPrune(projDir, plan) {
-  const dir = trashDir();
+  const dir = isWindows ? null : trashDir();
   const moved = [];
   const failed = [];
 
   for (const r of plan.remove) {
     const abs = path.join(projDir, r.file);
     try {
-      fs.renameSync(abs, freeName(dir, `${path.basename(projDir)}__${path.basename(r.file)}`));
+      discard(abs, dir, `${path.basename(projDir)}__${path.basename(r.file)}`);
       moved.push(r.file);
     } catch (e) {
       failed.push({ file: r.file, error: e && e.message ? e.message : 'move failed' });
@@ -114,11 +145,11 @@ export function applyPrune(projDir, plan) {
     const sidecar = abs.replace(/\.(mp4|webm|mov)$/i, '.meta.json');
     try {
       if (fs.existsSync(sidecar)) {
-        fs.renameSync(sidecar, freeName(dir, `${path.basename(projDir)}__${path.basename(sidecar)}`));
+        discard(sidecar, dir, `${path.basename(projDir)}__${path.basename(sidecar)}`);
       }
     } catch {
       /* le sidecar n'est qu'un cache de durée */
     }
   }
-  return { moved, failed, trash: dir, freedBytes: plan.freeBytes };
+  return { moved, failed, trash: dir || 'Corbeille Windows', freedBytes: plan.freeBytes };
 }

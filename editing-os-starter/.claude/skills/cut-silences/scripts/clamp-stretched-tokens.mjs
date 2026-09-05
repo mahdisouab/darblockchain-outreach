@@ -16,7 +16,7 @@
 // prints a table of every clamp. Run before cut-silences.mjs.
 
 import fs from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 
 const args = process.argv.slice(2);
 const [transcriptPath, videoPath] = args;
@@ -29,9 +29,14 @@ const dry = args.includes('--dry');
 if (!transcriptPath || !videoPath) { console.error('usage: clamp-stretched-tokens.mjs <transcript.json> <video> [--min 1.2] [--noise -30] [--sil-min 0.6] [--dry]'); process.exit(2); }
 
 // one silencedetect pass over the whole source (ffmpeg reports on stderr)
-const stderr = execFileSync('sh', ['-c',
-  `ffmpeg -hide_banner -i "${videoPath.replace(/"/g, '\\"')}" -vn -af silencedetect=noise=${NOISE}dB:d=${SIL_MIN} -f null - 2>&1`],
-  { maxBuffer: 64 * 1024 * 1024 }).toString();
+// ffmpeg lancé directement (pas de `sh`, absent sous Windows) ; silencedetect
+// écrit son rapport sur stderr.
+const ff = spawnSync('ffmpeg',
+  ['-hide_banner', '-nostdin', '-i', videoPath, '-vn', '-af', `silencedetect=noise=${NOISE}dB:d=${SIL_MIN}`, '-f', 'null', '-'],
+  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+if (ff.error) throw ff.error;
+if (ff.status !== 0) throw new Error(`ffmpeg silencedetect failed (exit ${ff.status}):\n${ff.stderr}`);
+const stderr = ff.stderr || '';
 const silences = [];
 const starts = [...stderr.matchAll(/silence_start: ([\d.]+)/g)].map(m => +m[1]);
 const ends = [...stderr.matchAll(/silence_end: ([\d.]+)/g)].map(m => +m[1]);

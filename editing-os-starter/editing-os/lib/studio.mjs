@@ -26,6 +26,8 @@ import http from 'node:http';
 import path from 'node:path';
 import { execFile, spawnSync } from 'node:child_process';
 
+import { hyperframesCli } from '../../scripts/lib/platform.mjs';
+
 const BASE_PORT = 3900;
 // EXACTEMENT la fenêtre que balaie la CLI depuis --port : au-delà, on louperait
 // un studio qu'elle a placé plus loin, et on en lancerait un doublon.
@@ -111,9 +113,13 @@ export async function open(projDir, { snapshot } = {}) {
   await evictIfNeeded();
   if (typeof snapshot === 'function') snapshot();
 
-  const r = spawnSync('npx',
-    ['hyperframes', 'preview', '--background', '--no-open', '--port', String(BASE_PORT)],
-    { cwd: projDir, encoding: 'utf8', timeout: 60000 });
+  // node sur le point d'entrée du paquet plutôt que `npx` : sous Windows,
+  // npx est un script .cmd que spawn() refuse sans shell (voir platform.mjs).
+  const hf = hyperframesCli();
+  if (!hf) return { error: 'HyperFrames n\'est pas installé : lance `npm install` à la racine du workspace.' };
+  const r = spawnSync(hf.cmd,
+    [...hf.args, 'preview', '--background', '--no-open', '--port', String(BASE_PORT)],
+    { cwd: projDir, encoding: 'utf8', timeout: 60000, windowsHide: true });
   if (r.error) return { error: r.error.message };
 
   // Le port annoncé n'est pas fiable (la CLI saute les ports pris) : on cherche
@@ -145,8 +151,9 @@ async function settle(port) {
 export function close(projDir) {
   lastUsed.delete(path.resolve(projDir));
   return new Promise((resolve) => {
-    execFile('npx', ['hyperframes', 'preview', '--stop'],
-      { cwd: projDir, timeout: 30000 }, (err, stdout, stderr) => {
+    const hf = hyperframesCli() || { cmd: 'npx', args: ['hyperframes'] };
+    execFile(hf.cmd, [...hf.args, 'preview', '--stop'],
+      { cwd: projDir, timeout: 30000, windowsHide: true }, (err, stdout, stderr) => {
         resolve({ ok: !err, out: String(stdout || stderr || '').trim() });
       });
   });

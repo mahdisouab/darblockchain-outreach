@@ -127,7 +127,7 @@ to check them at once.
 
 ```bash
 npm install
-brew install whisper-cpp  # local transcription (no API key)
+brew install whisper-cpp  # local transcription (no API key) — Windows: no brew, see LISEZMOI.md § 2 bis
 cp .env.example .env      # optional keys only
 npx hyperframes doctor
 npm run os                # confirm the dashboard comes up on :4200
@@ -137,6 +137,18 @@ npm run os                # confirm the dashboard comes up on :4200
 itself to `models/` on first use. Every key in `.env` is optional: `ELEVENLABS_API_KEY`
 only enables the hosted transcriber fallback, and Pexels / Pixabay / Unsplash only affect
 `insert-broll`'s ability to fetch new stock footage from the web.
+
+### Windows
+
+The workspace was built on macOS; every Windows difference lives in one file,
+`scripts/lib/platform.mjs`: find a binary on the PATH without `which`, find Python as
+`python3` / `python` / `py -3`, run the HyperFrames CLI through `node` instead of `npx` (a
+`.cmd` that `spawn()` refuses without a shell), reveal in Explorer, Recycle Bin in
+`prune.mjs`. `npm run verify|verif-montage|master` go through `scripts/py.mjs`, which also
+forces `PYTHONUTF8=1` so French transcripts keep their accents. Launcher:
+`editing-os\Editing OS.bat`. Shell commands in this file and in the skills assume a POSIX
+shell: run them from Git Bash (what Claude Code uses on Windows). Setup steps and the
+whisper.cpp prebuilt binaries: `LISEZMOI.md` § 2 bis.
 
 ## Workspace layout
 
@@ -336,7 +348,8 @@ node scripts/transcribe-whisper.mjs path/to/video.mp4         # → <stem>.json 
 #          --no-vad · --no-align · --silence-db -30 · --silence-min 0.2
 ```
 
-Requires `brew install whisper-cpp`. The ggml model (~1.6 GB for `large-v3-turbo`) and the
+Requires `brew install whisper-cpp` (Windows: the prebuilt `whisper-bin-x64.zip`, its `Release\`
+folder on the PATH or `WHISPER_CLI=<path to whisper-cli.exe>`, see `LISEZMOI.md` § 2 bis). The ggml model (~1.6 GB for `large-v3-turbo`) and the
 silero VAD model download automatically to `models/` on first use; `models/` is gitignored.
 Roughly 7x realtime on an M4 Pro.
 

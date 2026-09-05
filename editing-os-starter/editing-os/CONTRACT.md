@@ -23,7 +23,8 @@ Errors: non-2xx with body `{ "error": string }`.
 2. Reject 400 unless `p === ROOT` is false AND `p.startsWith(ROOT + path.sep)` where
    `ROOT` is the resolved workspace root.
 3. Reject 404 if `!fs.existsSync(p)`.
-4. Then `execFile('open', ['-R', p])`. Never pass through a shell.
+4. Then `revealPath(p, cb)` from `scripts/lib/platform.mjs`: `open -R` on macOS,
+   `explorer.exe /select,` on Windows, `xdg-open` on Linux. Never pass through a shell.
 
 ## Interfaces
 

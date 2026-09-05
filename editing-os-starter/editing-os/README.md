@@ -24,7 +24,7 @@ button forces a rescan (`POST /api/rescan`).
   disk) plus a card grid. Each card has a 9-segment pipeline rail, family and archetype
   badges, newest-render age, and a stale flag. Client-side filters: search, family,
   archetype, minimum reached stage, stale-only, hide-utility (default on), and sort.
-- Project Detail (`#/project/<slug>`) - absolute path with Copy and Reveal in Finder,
+- Project Detail (`#/project/<slug>`) - absolute path with Copy and Reveal in folder (Finder / Explorer),
   per-stage rows with evidence, a renders table with per-file stale flags, and NOTES.md
   rendered as markdown-lite.
 - Studio (`#/studio`) - an 8-bit pixel-art office of the five pipeline agents; see the
@@ -100,7 +100,8 @@ testing for a `"words"` key (widened from 4 KB because real ElevenLabs transcrip
 - Archetype can read `unknown` for hand-built graphics projects that have an `index.html`
   but no `_gen*.mjs` and no `cards/` dir. Motion still detects correctly; the badge is
   just conservative.
-- Reveal in Finder runs `open -R` and only works on the host machine. Paths are confined
+- Reveal in folder runs `open -R` (macOS), `explorer.exe /select,` (Windows) or `xdg-open`
+  (Linux) via `scripts/lib/platform.mjs`, and only works on the host machine. Paths are confined
   to the workspace root (400 outside root, 404 if missing).
 
 ## Le hub — un seul lien à mettre en favori

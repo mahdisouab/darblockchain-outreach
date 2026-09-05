@@ -52,6 +52,8 @@ built on HyperFrames). It is self-contained: its own `CLAUDE.md`, its own skills
 - Work on videos from inside that folder (`cd editing-os-starter`), so its `CLAUDE.md`
   and skills apply and the HyperFrames CLI resolves paths correctly.
 - Setup: `npm install`, then `npx hyperframes doctor` (needs Node 20+, FFmpeg, Chrome,
-  whisper-cpp on the machine), then `npm run os` for the dashboard on :4200.
+  whisper-cpp on the machine), then `npm run os` for the dashboard on :4200. On Windows:
+  `winget` for Node/FFmpeg/Chrome/Python, whisper.cpp prebuilt zip, and the launcher
+  `editing-os-starter/editing-os/Editing OS.bat`; steps in `editing-os-starter/LISEZMOI.md` § 2 bis.
 - `node_modules/`, `models/`, renders and raw media are gitignored there; the SFX bank
   (`asset-library/sfx/*.wav`) and the shipped style preview posters are tracked on purpose.

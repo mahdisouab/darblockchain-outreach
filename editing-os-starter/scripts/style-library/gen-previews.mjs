@@ -17,6 +17,7 @@ import { chromium } from "playwright";
 import { pathToFileURL } from "url";
 import { execSync } from "child_process";
 import fs from "fs";
+import os from "os";
 import path from "path";
 
 const args = process.argv.slice(2);
@@ -43,7 +44,7 @@ for (const styleDir of styles) {
     const comp = (fs.readFileSync(file, "utf8").match(/data-composition-id="([^"]+)"/) || [])[1];
     if (!comp) { console.log("SKIP no comp id", card.id); continue; }
     try {
-      const vdir = fs.mkdtempSync("/tmp/hf-preview-");
+      const vdir = fs.mkdtempSync(path.join(os.tmpdir(), "hf-preview-"));
       const ctx = await b.newContext({
         viewport: { width: 304, height: 540 },
         recordVideo: { dir: vdir, size: { width: 304, height: 540 } },
