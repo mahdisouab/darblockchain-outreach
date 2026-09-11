@@ -1,0 +1,8 @@
+# Noms à ne jamais laisser dans le paquet : un par ligne, insensible à la casse,
+# 4 caractères au moins. Lu par scripts/paquet-eleves.mjs, qui y ajoute l'identité git
+# de la machine (user.name, partie locale de user.email, propriétaire du dépôt distant).
+# Ce fichier ne voyage jamais ; le corpus du skill tunisien est exempté du contrôle.
+Mahdi
+Souab
+souebmahdi
+mahdisouab

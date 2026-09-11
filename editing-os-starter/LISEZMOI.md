@@ -324,7 +324,8 @@ détectent automatiquement.
 
 - **Les vidéos, rushes et rendus** — c'est le travail du créateur d'origine, pas du logiciel.
   `video-projects/`, `formats/exemples/` et `formats/references/` démarrent vides.
-- **Les polices de marque sous licence** — remplacées par Outfit (libre). Voir §5.
+- **Aucune police de marque à installer** — le style 10 tourne sur Outfit (Google Fonts) et
+  les squelettes de reel embarquent leurs `.woff2` (Garet, Instrument Serif, Inter Tight). Voir §5.
 - **Les planches de références** des styles (captures d'écran de vidéos d'autres créateurs,
   qui servaient de moodboard) — les specs `DESIGN.md` décrivent tout ce qu'il faut savoir.
 - **Le modèle whisper** (1,6 Go) et `node_modules` — ils se téléchargent à l'installation.

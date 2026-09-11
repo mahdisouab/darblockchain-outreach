@@ -11,13 +11,54 @@ volume-gated.
 
 ## Les formats standard (à lire avant PROCESS.md)
 
-**`formats/`** contient les trois formats de reel standardisés le 18/08 depuis les 6
-reels publiés : `01-split-carte` (défaut), `02-avant-apres`,
+**`formats/`** contient les formats de reel : **`04-sujet-central` — le défaut depuis le
+06/09, défini par le créateur lui-même** — et les trois formats standardisés le 18/08
+depuis les 6 reels publiés d'un autre créateur : `01-split-carte` (sur demande explicite
+seulement : sa carte met le visage dans l'interface), `02-avant-apres`,
 `03-recreer-viral`. Chaque spec porte la géométrie canonique, la structure timecodée,
-la place du CTA et une checklist ; les chiffres sont prouvés dans `formats/MESURES.md`.
-Les squelettes clonables vivent dans `style-templates/reel-0*` et le skill
+la place du CTA et une checklist ; les chiffres des 01–03 sont prouvés dans
+`formats/MESURES.md`, ceux du 04 viennent de son retour du 06/09 et de mesures sur son
+rush. Les squelettes clonables vivent dans `style-templates/reel-0*` et le skill
 **`reel-format`** choisit le format puis instancie le projet. Un nouveau reel commence
 par `reel-format`, puis suit `PROCESS.md` normalement.
+
+## La langue de la vidéo (06/09)
+
+Le créateur tourne en **tunisien (derja)**, en français ou en anglais, et une voix
+tunisienne est hybride par nature : mots français et anglais du domaine (`ChatGPT`, `PFE`,
+`CV`, `feedback`, `donc`) dans une structure tunisienne — ce sont la langue, pas des
+anomalies. La langue se **détecte** sur chaque rush avant toute transcription (`-l auto`
+sur 15 s) : `--language fr` sur de la derja fabrique un transcript faux qui a l'air vrai.
+Voix tunisienne → skill **`tunisien`** chargé avant transcription, sous-titres, storyboard et
+coupes. `meta.json` porte `verify.language` (langue de whisper) et `captions.script`
+(`franco` par défaut · `arabe` · `fr` · `en`) : langue parlée ≠ langue des sous-titres, et la
+traduction est un mode demandé, jamais un réflexe. Ne jamais forcer du tunisien dans une
+vidéo française ou anglaise.
+
+## Le style du créateur (06/09) — format 04 par défaut
+
+Retour du créateur sur son premier reel, gravé dans `formats/04-sujet-central.md` :
+
+- **Lui d'abord.** Visage et haut du corps au centre-haut du cadre (ligne des yeux à
+  36–40 % de la hauteur), immédiatement visibles, point focal principal. Rien
+  d'important dans les zones que l'interface recouvre : 220 px en haut, 450 px en bas,
+  colonne d'icônes x 980 → 1080 (y 1000 → 1470), marges 35 px. Le cadrage se mesure
+  (`tools/headline.mjs`, une image du rush) et se vérifie sur images
+  (`node scripts/safe-zone.mjs <rendu>`), jamais en CSS.
+- **Trois modes d'écran, choisis par passage** : SOLO (lui seul), AUTOUR (éléments
+  légers dans les poches autour de lui, jamais sur le visage), PLEIN ÉCRAN (un visuel
+  important prend l'écran, lui sort), puis RETOUR sur lui. Le reel s'ouvre sur lui ;
+  plein écran ≤ 40 % du total.
+- **Les sous-titres du premier reel sont la référence** (Garet 900, 62 px, groupes de
+  1–4 mots, mots-clés jaunes, une ligne) — posés sur la ligne 1180, sous le menton.
+- **La fonction d'abord** : chaque animation illustre, aide à comprendre ou met en
+  valeur ; aucun effet pour remplir. Un passage sur lui seul n'est pas une frame morte.
+- **Hiérarchie en cas de conflit** : compréhension > son visage > safe zones >
+  sous-titres lisibles > graphiques > dynamisme.
+
+Le format 01 (carte en tiers bas) plaçait son visage dans l'interface : il ne s'utilise
+plus que sur demande explicite. Chaque nouveau retour du créateur s'ajoute à la spec du
+04, pas seulement à la vidéo en cours.
 
 ## Le process de référence
 
@@ -208,6 +249,7 @@ docs. Skipping them produces broken compositions.
 | Skill | When to use |
 | --- | --- |
 | `design-beats` | AVANT toute composition de reel : écoute le transcript et propose un storyboard d'animations avancées quasi chaque seconde (le designer) |
+| `tunisien` | Dès qu'une voix, un transcript, un script ou un message est en tunisien (derja, Franco-Tunisien 3/7/5/9, lettres arabes, mélange FR/EN) — avant transcription, sous-titres, storyboard, coupes et sentinelles ; jamais sur une vidéo FR/EN |
 | `hyperframes` | Authoring compositions, captions, TTS, audio-reactive animation, transitions |
 | `hyperframes-cli` | CLI: `init`, `add`, `lint`, `preview`, `render`, `transcribe`, `tts`, `doctor` |
 | `gsap` | GSAP animation: timelines, easing, stagger, plugins, performance |
@@ -341,6 +383,12 @@ défauts de la v10.
 Default to **local whisper.cpp** for any transcript. It is offline, free, and needs no
 API key. Do **not** use `npx hyperframes transcribe`, or openai-whisper /
 faster-whisper (avoid the 3 GB PyTorch install).
+
+**Detect the language first.** Run 15 s of the rush through `whisper-cli -l auto` before
+choosing `--language`: the creator records in French, English or **Tunisian derja**, and a
+derja voice forced through `--language fr` yields a hallucination loop that looks like a
+transcript (measured 05/09). Derja → `--language ar` (good timings, unreliable text: French
+words come out in Arabic letters) + the `tunisien` skill for everything downstream.
 
 ```bash
 node scripts/transcribe-whisper.mjs path/to/video.mp4         # → <stem>.json next to input
@@ -490,15 +538,26 @@ autre script. Onze éclats survivaient à la première approche.
 node scripts/paquet-eleves.mjs --zip     # → dist-eleves/editing-os-starter.zip
 ```
 
-Le paquet du 26/08 avait été assemblé à la main ; celui-ci se reconstruit. Le
-contenu est une **liste blanche** — une liste noire oublie toujours le fichier
-qu'on vient d'ajouter — et trois assertions bloquent la construction plutôt que
-de l'avertir : aucun nom personnel, aucun chemin machine, aucune clé renseignée,
-aucun média de plus de 6 Mo. Le style `10-maison` devient `10-maison`,
-`video-projects/` part vide avec son mode d'emploi, et les rushes, `models/`,
-`node_modules/` et `.env` ne partent jamais.
+Le paquet du 26/08 avait été assemblé à la main ; celui-ci se reconstruit
+(script recréé le 11/09 : celui promis ici n'existait plus nulle part). Le
+contenu est une **liste blanche** (`scripts/lib/paquet.mjs`) — une liste noire
+oublie toujours le fichier qu'on vient d'ajouter — filtrée par le `.gitignore`,
+et les contrôles bloquent la construction plutôt que de l'avertir : aucun chemin
+machine, aucune clé renseignée, aucun email, aucun nom personnel, aucun média de
+plus de 6 Mo. Les noms bannis viennent de `.paquet-noms` (suivi par git, jamais
+embarqué) et de l'identité git de la machine qui construit ; le corpus du skill
+`tunisien` en est exempté, il est fait des reels du créateur. `video-projects/`
+part vide avec son mode d'emploi ; les rushes, `models/`, `node_modules/`,
+`.claude/worktrees/` et `.env` ne partent jamais. Sans `--zip`, rien n'est écrit.
+Tests : `npm test`.
 
-Après toute modification de la table de remplacement, **relire les fichiers
-produits** : « au créateur » et « the brand yellow » sont passés au
-travers d'une première version, parce qu'en JavaScript `\b` est une frontière
-ASCII et ne se déclenche pas devant un « à ».
+L'archive sort de `git archive` sur un index temporaire, pas d'une compression
+classique : construite sous Windows, celle-ci perdrait les droits d'exécution
+des `.command` et `.sh` que le Mac attend, et les fins de ligne. L'index
+temporaire pose `+x` sur ces fichiers et `.gitattributes` fixe LF / CRLF. Sans
+dépôt git autour du dossier, le script s'arrête et le dit (« git init » suffit).
+
+Les noms se cherchent en **sous-chaîne, pas en mot** : « au créateur » et « the
+brand yellow » étaient passés au travers de la table de remplacement d'une
+première version, parce qu'en JavaScript `\b` est une frontière ASCII et ne se
+déclenche pas devant un « à ».

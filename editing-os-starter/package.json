@@ -8,11 +8,14 @@
     "transcribe": "node scripts/transcribe-whisper.mjs",
     "transcribe:elevenlabs": "node scripts/transcribe-elevenlabs.mjs",
     "validate-beats": "node scripts/validate-beat-sync.mjs",
+    "safe-zone": "node scripts/safe-zone.mjs",
     "verify": "node scripts/py.mjs scripts/autoverify.py",
     "verif-montage": "node scripts/py.mjs scripts/verif-montage.py",
     "master": "node scripts/py.mjs scripts/master.py",
     "preflight": "node scripts/preflight.mjs",
-    "os": "node editing-os/server.mjs"
+    "os": "node editing-os/server.mjs",
+    "paquet": "node scripts/paquet-eleves.mjs",
+    "test": "node --test scripts/lib/paquet.test.mjs"
   },
   "engines": {
     "node": ">=20"

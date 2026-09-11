@@ -48,3 +48,9 @@ style-library/*/preview/*
 
 # vignettes générées par le dashboard (régénérables depuis les rendus)
 editing-os/.cache/
+
+# paquet pour les élèves / amis (régénérable : node scripts/paquet-eleves.mjs --zip)
+dist-eleves/
+
+# worktrees git posés par Claude Code dans le dossier (copie du dépôt parent, jamais à embarquer)
+.claude/worktrees/
