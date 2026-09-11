@@ -11,9 +11,10 @@ crée le dossier avec son squelette.
 À la main :
 
     mkdir video-projects/26-01-15-mon-sujet
-    cp -R style-templates/reel-01-split-carte/. video-projects/26-01-15-mon-sujet/
+    cp -R style-templates/reel-04-sujet-central/. video-projects/26-01-15-mon-sujet/   # le format par défaut (formats/04-sujet-central.md)
     cd video-projects/26-01-15-mon-sujet
-    # puis édite meta.json, dépose ton rush dans assets/, et suis PROCESS.md
+    # puis édite meta.json, dépose ton rush dans assets/, remplis BRIEF.md (le script tel que
+    # tu le dis, les sous-titres, le CTA, les preuves) et suis PROCESS.md
 
 Chaque projet est autonome : `index.html`, `compositions/`, `assets/`,
 `renders/`, `hyperframes.json`, `meta.json`.

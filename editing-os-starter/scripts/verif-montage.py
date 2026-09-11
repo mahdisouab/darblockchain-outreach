@@ -33,7 +33,10 @@ def doctype(proj):
     Six animations manquaient au fichier livré.
     """
     coupables = []
-    for f in glob.glob(os.path.join(proj, 'compositions', '**', '*.html'), recursive=True):
+    racine = os.path.join(proj, 'index.html')  # là où l'incident du 02/09 s'est produit
+    fichiers = [racine] if os.path.isfile(racine) else []
+    fichiers += glob.glob(os.path.join(proj, 'compositions', '**', '*.html'), recursive=True)
+    for f in fichiers:
         tete = open(f, encoding='utf-8').read(400).lstrip()
         if tete.lower().startswith('<!doctype'):
             coupables.append(os.path.relpath(f, proj))
@@ -73,10 +76,23 @@ def bandes_noires(rendu, n=40):
                  '-of', 'csv=p=0', rendu]).split(',')
     if len(w) >= 2:
         lw, lh = int(w[0]), int(w[1])
-        if abs(lw / lh - 16 / 9) > 0.005:
-            ko('format %dx%d, ce n\'est pas du 16/9' % (lw, lh))
+        # Le ratio attendu vient du meta.json du projet (un reel 9/16 déclare
+        # width 1080 / height 1920) ; sans déclaration, la règle du 02/09 : 16/9.
+        meta = {}
+        try:
+            with open(os.path.join(os.path.dirname(os.path.dirname(rendu)), 'meta.json'), encoding='utf-8') as fh:
+                meta = json.load(fh)
+        except Exception:
+            pass
+        mw, mh = meta.get('width'), meta.get('height')
+        if mw and mh:
+            attendu, nom = mw / mh, '%d/%d (meta.json)' % (mw, mh)
         else:
-            ok('format %dx%d, 16/9 exact' % (lw, lh))
+            attendu, nom = 16 / 9, '16/9'
+        if abs(lw / lh - attendu) > 0.005:
+            ko('format %dx%d, ce n\'est pas du %s' % (lw, lh, nom))
+        else:
+            ok('format %dx%d, %s exact' % (lw, lh, nom))
     d = float(ffprobe(['-show_entries', 'format=duration', '-of', 'csv=p=0', rendu]) or 0)
     noires = []
     for i in range(n):

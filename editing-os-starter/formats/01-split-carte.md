@@ -6,8 +6,16 @@
 > Implémentation validée : `video-projects/26-08-17-montage-video-par-ia` (v18, relue
 > image par image au tournage).
 
-C'est le format par défaut. Les deux autres sont des cas particuliers ; celui-ci porte
-tout ce qui n'est ni une comparaison ni une recette.
+> **Depuis le 06/09/2026, ce format n'est plus le défaut.** Sa carte speaker
+> (`top 1250 → 1878 px`) place le visage dans les 450 px du bas que l'interface
+> Instagram recouvre ; le créateur l'a vu sur son premier reel (« trop bas, trop près de
+> la limite de la safe zone »). Le défaut est [04 · Sujet central](04-sujet-central.md).
+> Le 01 ne s'utilise que sur demande explicite — et alors la carte remonte pour que le
+> menton reste au-dessus de 1470 px. La géométrie ci-dessous est celle mesurée à
+> l'origine, conservée pour référence.
+
+Il portait tout ce qui n'est ni une comparaison ni une recette ; c'est désormais le rôle
+du 04.
 
 ---
 

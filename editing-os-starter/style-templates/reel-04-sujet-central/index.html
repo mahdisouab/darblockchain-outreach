@@ -1,0 +1,321 @@
+<html>
+  <head>
+    <!--
+      SCAFFOLD · FORMAT 04 — SUJET CENTRAL (le défaut depuis le 06/09/2026)
+      Spec : ../../formats/04-sujet-central.md   ·   Safe zone : node scripts/safe-zone.mjs <rendu>
+
+      Ce qui est déjà juste et qu'il ne faut PAS retoucher :
+        - la géométrie : lui plein cadre, ligne des yeux à 732 (38 %), sous-titre sur la ligne 1180,
+          poches autour de lui, scène plein écran lisible entre 220 et 1140, pied 1290 → 1460
+        - les deux couches vidéo (fond + détourage) au MÊME transform, toujours (règle des « 4 oreilles »)
+        - frame() : tout changement d'échelle recalcule y pour que LES YEUX NE BOUGENT PAS
+        - les trois modes d'écran : around() / behind() → AUTOUR, takeover() → PLEIN ÉCRAN puis RETOUR
+
+      Ce qu'il faut remplacer :
+        - assets/edit.mp4, assets/edit-cutout.webm, assets/voix.m4a (placeholders)
+        - SEG / CUTS (l'EDL du montage parole)
+        - EYE_SRC (ligne des yeux mesurée sur le rush) et, si besoin, BASE_SCALE / FRAMING
+        - CAPS (les sous-titres, timecodes SOURCE)
+        - les beats de démonstration (#d-*) par ceux du storyboard (design-beats, colonne MODE)
+    -->
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      @font-face { font-family: "Garet"; font-weight: 400; src: url("assets/fonts/Garet-Regular.woff2") format("woff2"); }
+      @font-face { font-family: "Garet"; font-weight: 500; src: url("assets/fonts/Garet-Medium.woff2") format("woff2"); }
+      @font-face { font-family: "Garet"; font-weight: 700; src: url("assets/fonts/Garet-Bold.woff2") format("woff2"); }
+      @font-face { font-family: "Garet"; font-weight: 800; src: url("assets/fonts/Garet-Heavy.woff2") format("woff2"); }
+      @font-face { font-family: "Garet"; font-weight: 900; src: url("assets/fonts/Garet-Black.woff2") format("woff2"); }
+      @font-face { font-family: "Inter Tight"; font-weight: 900; src: url("assets/fonts/inter-tight-900-latin.woff2") format("woff2"); }
+      @font-face { font-family: "Instrument Serif"; font-style: italic; font-weight: 400; src: url("assets/fonts/instrument-serif-italic.woff2") format("woff2"); }
+
+      html, body { margin: 0; background: #000; }
+
+      #reel {
+        position: absolute; inset: 0;
+        width: var(--reel-w); height: var(--reel-h);
+        overflow: hidden; background: var(--bg);
+        font-family: "Garet", "Inter Tight", system-ui, sans-serif;
+        letter-spacing: -0.05em;
+        --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+      }
+
+      /* ---------- le groupe « lui » : tout ce qui sort pendant un plein écran ---------- */
+      #reel #stage { position: absolute; inset: 0; z-index: 1; transform-origin: 50% 45%; }
+      /* LES DEUX WRAPPERS PORTENT LE MÊME TRANSFORM, TOUJOURS (frame() les règle ensemble). */
+      #reel .vwrap, #reel .cutwrap { position: absolute; inset: 0; transform-origin: 50% 0%; }
+      #reel .vwrap { z-index: 1; }
+      /* 10/09 : le voile couvre TOUTE l'image (lui compris, 0,18) — le détourage ne sert plus qu'aux passages DERRIÈRE lui */
+      #reel #behind { position: absolute; inset: 0; z-index: 2; }
+      #reel .cutwrap { z-index: 3; pointer-events: none; }
+      #reel #dim { position: absolute; inset: 0; z-index: 4; background: #000; opacity: 0; }
+      #reel #around { position: absolute; inset: 0; z-index: 5; }
+      #reel .vwrap video, #reel .cutwrap video {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        object-fit: cover; object-position: 50% 0%;
+      }
+
+      /* ---------- la scène plein écran (lui absent), le pied, le sous-titre ---------- */
+      #reel #takeover { position: absolute; inset: 0; z-index: 6; visibility: hidden; }
+      #reel #foot {
+        position: absolute; left: var(--safe-side); right: var(--safe-col-w);
+        top: var(--f04-foot-top); height: calc(var(--f04-foot-bottom) - var(--f04-foot-top));
+        z-index: 7; display: flex; align-items: center; justify-content: center;
+      }
+      #reel .cap {
+        position: absolute; left: 110px; right: 110px; top: var(--f04-cap-top);   /* ≤ 860 px : la colonne d'icônes commence à 980 */
+        z-index: 8; text-align: center;
+        font-weight: 900; font-size: var(--f04-cap-size); line-height: 1.1; white-space: nowrap;
+        color: #fff;
+        text-shadow: 0 3px 8px rgba(0,0,0,0.85), 0 0 22px rgba(0,0,0,0.75), 0 0 44px rgba(0,0,0,0.55);
+      }
+      #reel .cap em { font-style: normal; color: var(--jaune); }
+      /* option, si un fond reste illisible : <div class="cap pill"> */
+      #reel .cap.pill { left: 50%; right: auto; transform: translateX(-50%); max-width: var(--f04-cap-maxw); padding: 10px 28px; border-radius: 22px; background: rgba(0,0,0,0.6); }
+
+      /* ---------- les poches (géométrie canon, formats/04-sujet-central.md) ---------- */
+      #reel .pk { position: absolute; }
+      #reel .pk.tete-gauche  { left: 35px;  top: 240px; width: 285px; }               /* x 35 → 320 */
+      #reel .pk.tete-droite  { right: 35px; top: 240px; width: 225px; text-align: right; } /* x 820 → 1045 */
+      #reel .pk.epaule-gauche{ left: 35px;  top: 900px; width: 385px; height: 250px; }
+      #reel .pk.epaule-droite{ left: 660px; top: 900px; width: 300px; height: 250px; } /* s'arrête à 960, 20 px avant la colonne d'icônes */
+      #reel .demo { visibility: hidden; }
+
+      /* ---------- briques de démonstration (à remplacer par les cartes du storyboard) ---------- */
+      #reel .chip {
+        display: inline-flex; align-items: center; gap: 14px; padding: 16px 24px; border-radius: 999px;
+        background: rgba(8,10,16,0.88); border: 1px solid rgba(255,255,255,0.14); color: #fff;
+        font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+      }
+      #reel .chip i { width: 14px; height: 14px; border-radius: 50%; background: var(--jaune); }
+      #reel .stat { position: absolute; right: 0; bottom: 0; text-align: right; }
+      #reel .stat b { display: block; font-size: 120px; line-height: 1; color: var(--jaune); letter-spacing: -0.06em; text-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+      #reel .stat span { font-family: var(--mono); font-size: 22px; letter-spacing: 0.16em; text-transform: uppercase; color: #fff; }
+      #reel .bigword { position: absolute; left: 0; right: 0; top: 500px; text-align: center; font-size: 230px; line-height: 1; color: #fff; opacity: 0.92; letter-spacing: -0.06em; }
+      #reel .scene {
+        position: absolute; left: 70px; right: 70px; top: 300px; height: 700px;   /* contenu entre 220 et 1140 ; sous 1000, x ≤ 980 (colonne d'icônes) */
+        border-radius: 32px; background: #fff; color: #0d0d0d; padding: 48px 54px; box-sizing: border-box;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6); letter-spacing: -0.02em;
+      }
+      #reel .scene .eb { font-family: var(--mono); font-size: 22px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--or); font-weight: 700; }
+      #reel .scene h2 { font-weight: 900; font-size: 64px; line-height: 1.05; letter-spacing: -0.04em; margin: 18px 0 0; }
+      #reel .scene .bar { margin-top: 40px; height: 22px; border-radius: 11px; background: #ececf1; overflow: hidden; }
+      #reel .scene .bar i { display: block; height: 100%; width: 100%; background: var(--jaune); transform-origin: 0 50%; transform: scaleX(0); }
+      #reel .scene .skel { height: 20px; border-radius: 10px; background: #e8e8ea; margin-top: 18px; width: 82%; }
+      #reel .cta { display: inline-flex; align-items: center; gap: 18px; padding: 20px 34px; border-radius: 999px; background: rgba(8,10,16,0.9); border: 1px solid rgba(255,255,255,0.14); color: #fff; font-weight: 800; font-size: 40px; letter-spacing: -0.03em; box-shadow: 0 16px 40px rgba(0,0,0,0.45); }
+      #reel .cta em { font-style: normal; color: var(--jaune); font-weight: 900; }
+    </style>
+  </head>
+
+  <body>
+    <div id="reel" data-composition-id="reel" data-start="0" data-width="1080" data-height="1920" data-fps="30">
+      <div class="reel-bg"></div>
+
+      <!-- ============ lui : fond + voile + derrière + détourage + autour ============ -->
+      <div id="stage">
+        <div class="vwrap" id="vwrap">
+          <video id="vmain" src="assets/edit.mp4"
+                 data-start="0" data-duration="12" data-media-start="0"
+                 data-track-index="0" muted playsinline></video>
+        </div>
+        <div id="dim"></div>
+        <div id="behind">
+          <div class="bigword demo" id="d-word">SECRETS</div>
+        </div>
+        <div class="cutwrap" id="cutwrap">
+          <!-- 10/09 : détourage CIBLÉ — un <video> alpha par passage DERRIÈRE lui (tools/cutout-ranges.mjs,
+               en secondes montées, poignées incluses, tous sur la piste 1 sans chevauchement). Le
+               détourage du rush entier (75 min) n'existe plus ; le cadrage se mesure sur une image par
+               plan (tools/cutout-frames.mjs). Exemple : -->
+          <video id="cut-d-word" src="assets/cut/d-word.webm"
+                 data-start="2.7" data-duration="2.6"
+                 data-track-index="1" muted playsinline></video>
+        </div>
+        <div id="around">
+          <div class="pk tete-gauche demo" id="d-chip"><span class="chip"><i></i>autour · chip</span></div>
+          <div class="pk epaule-droite demo" id="d-stat"><div class="stat"><b>×3</b><span>chiffre clé</span></div></div>
+        </div>
+      </div>
+
+      <!-- ============ scène plein écran (lui absent) ============ -->
+      <div id="takeover">
+        <div class="scene demo" id="d-scene">
+          <div class="eb">Plein écran · le visuel qui mérite l'attention</div>
+          <h2>Une interface, une preuve, un tableau : ce qu'on doit LIRE en grand.</h2>
+          <div class="bar"><i></i></div>
+          <div class="skel"></div><div class="skel" style="width: 64%"></div>
+        </div>
+      </div>
+
+      <!-- ============ pied (CTA, source) + sous-titre ============ -->
+      <div id="foot"><div class="demo" id="d-cta"><span class="cta">commente <em>MOTCLE</em></span></div></div>
+      <div class="cap" id="cap"></div>
+
+      <audio id="voix" src="assets/voix.m4a" data-start="0" data-duration="12" data-track-index="2"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* ==========================================================
+         1. L'EDL — remplacer par le montage parole réel.
+            SEG  : segments gardés, en temps SOURCE (vrais start/end de mots)
+            CUTS : micro-blancs rabotés au niveau SONORE, en temps BAKÉ
+            ed(t): temps source -> temps monté. TOUT passe par ed().
+         ========================================================== */
+      const SEG = [[0, 12]];
+      const CUTS = [];
+
+      const STARTS = []; let acc = 0;
+      SEG.forEach(([a, b]) => { STARTS.push(acc); acc += b - a; });
+      const DUR = acc - CUTS.reduce((s, [a, b]) => s + (b - a), 0);
+
+      function shiftCut(t) {
+        let d = 0;
+        for (const [a, b] of CUTS) { if (t >= b) d += b - a; else if (t > a) d += t - a; }
+        return t - d;
+      }
+      function ed(src) {
+        for (let i = 0; i < SEG.length; i++)
+          if (src >= SEG[i][0] - 0.01 && src <= SEG[i][1] + 0.01)
+            return shiftCut(STARTS[i] + (src - SEG[i][0]));
+        return null;
+      }
+      const S = (src) => { const t = ed(src); if (t === null) throw new Error("hors EDL : " + src); return +t.toFixed(3); };
+
+      const tl = gsap.timeline({ paused: true });
+      const NO = { immediateRender: false };
+
+      /* ==========================================================
+         2. LE CADRAGE — lui plein cadre, les yeux sur la ligne 732 (38 %).
+            EYE_SRC : ligne des yeux mesurée sur UNE image du rush (px, 1920 de haut).
+            frame(scale) recalcule y pour que les yeux ne bougent pas : un punch-in
+            fait grandir le visage sans le déplacer. Les DEUX couches, toujours.
+            Contrainte : EYE_SRC × BASE_SCALE ≥ 732 (sinon y > 0 ouvre une bande en haut)
+            et haut de tête ≥ 300 sur tous les plans (tools/headline.mjs).
+         ========================================================== */
+      const EYE_SRC = 610;        /* rush 26-09-05 ; à mesurer par rush */
+      const EYE_TARGET = 732;
+      const BASE_SCALE = 1.20;    /* 1,20 pour un rush cadré comme le 26-09-05 ; plus large → 1,3–1,4 */
+      const FRAMING = [];         /* [[srcStart, dy]] : décalage par plan, seulement si la tête sort de [300, 460] */
+
+      const frame = (scale, dy = 0) => ({ scale, y: EYE_TARGET - EYE_SRC * scale + dy });
+      function setFrame(t, scale, dy = 0) { tl.set(["#vwrap", "#cutwrap"], frame(scale, dy), t); }
+      gsap.set(["#vwrap", "#cutwrap"], frame(BASE_SCALE));
+      FRAMING.forEach(([src, dy]) => setFrame(S(src), BASE_SCALE, dy));
+      function punch(src, scale = 1.28, dy = 0) { setFrame(S(src), scale, dy); }
+      function unpunch(src, dy = 0) { setFrame(S(src), BASE_SCALE, dy); }
+
+      /* ==========================================================
+         3. LES SOUS-TITRES — le style validé le 06/09 : groupes de 1 à 4 mots,
+            remplacés en bloc, 0,6 à 1,2 s, coupés sur le SENS, une ligne,
+            ≤ 26 caractères, mot important préfixé `*` → jaune. Timecodes SOURCE.
+            Ligne fixe 1180, sous le menton, dans tous les modes.
+         ========================================================== */
+      const CAPS = [
+        [0.4, "Remplace ces groupes"],
+        [1.6, "par les tiens"],
+        [2.8, "depuis le transcript"],
+        [4.2, "un groupe tient"],
+        [5.4, "de 0,6 à 1,2 seconde"],
+        [7.0, "et se coupe sur le sens"],
+        [8.6, "jamais sur le visage"],
+        [10.2, "commente *MOTCLE"],
+      ];
+      const cap = document.getElementById("cap");
+      CAPS.forEach(([src, raw]) => {
+        const t = ed(src);
+        if (t === null) return;
+        tl.set(cap, { innerHTML: raw.replace(/\*(\S+)/g, "<em>$1</em>") }, t);
+        tl.fromTo(cap, { scale: 0.94, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.12, ease: "power3.out", ...NO }, t);
+      });
+      tl.to(cap, { autoAlpha: 0, duration: 0.15 }, DUR - 0.15);
+
+      /* ==========================================================
+         4. LES MODES D'ÉCRAN (formats/04-sujet-central.md)
+            SOLO        : rien à faire — lui. Un punch() suffit à tenir 2–3 s.
+            AUTOUR      : around(sel, a, b)  — un élément dans une poche (#around),
+                          le fond s'assombrit un peu (#dim), jamais la boîte visage.
+                          behind(sel, a, b)  — même chose DERRIÈRE lui (#behind).
+            PLEIN ÉCRAN : takeover(sel, a, b) — lui sort, la scène prend le cadre,
+                          puis RETOUR sur lui à b. Contenu lisible entre 220 et 1140.
+            PIED        : foot(sel, a, b)    — chip CTA / source sous le sous-titre.
+            Temps en SOURCE ; entrée/sortie calées sur des mots.
+         ========================================================== */
+      function show(sel, t) { tl.set(sel, { visibility: "visible" }, t); }
+      function rise(sel, t, d = 0.3) { show(sel, t); tl.fromTo(sel, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: d, ease: "expo.out", ...NO }, t); }
+      function pop(sel, t, d = 0.38) { show(sel, t); tl.fromTo(sel, { autoAlpha: 0, scale: 0.5, y: 40 }, { autoAlpha: 1, scale: 1, y: 0, duration: d, ease: "back.out(2)", ...NO }, t); }
+      function slam(sel, t) {
+        show(sel, t);
+        tl.fromTo(sel, { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "power4.in", ...NO }, t);
+        tl.to(sel, { scale: 1.06, duration: 0.14, ease: "power2.out" }, t + 0.3);
+        tl.to(sel, { scale: 1, duration: 0.2, ease: "power2.inOut" }, t + 0.44);
+      }
+      function out(sel, t) { tl.to(sel, { autoAlpha: 0, y: -30, duration: 0.18, ease: "power2.in" }, t - 0.18); tl.set(sel, { visibility: "hidden" }, t); }
+      /* entretien : rien ne reste immobile plus de 0,5 s */
+      function drift(sel, t0, t1, amp = 8, cycle = 3) {
+        if (t1 - t0 < 0.6) return;
+        const n = Math.max(1, Math.round((t1 - t0) / cycle));
+        tl.to(sel, { y: "-=" + amp, duration: (t1 - t0) / (n * 2), ease: "sine.inOut", yoyo: true, repeat: n * 2 - 1 }, t0);
+      }
+      const ENTRY = { pop, rise, slam };
+
+      function around(sel, aSrc, bSrc, { entry = "pop", dim = 0.25 } = {}) {
+        const a = S(aSrc), b = S(bSrc);
+        if (dim) { tl.to("#dim", { opacity: dim, duration: 0.25 }, a); tl.to("#dim", { opacity: 0, duration: 0.25 }, b - 0.25); }
+        ENTRY[entry](sel, a);
+        drift(sel, a + 0.5, b - 0.2);
+        out(sel, b);
+      }
+      const behind = around;                                   /* l'élément vit dans #behind, sous le détourage */
+      const foot = (sel, a, b, o = {}) => around(sel, a, b, { dim: 0, ...o });
+
+      function takeover(sel, aSrc, bSrc, { from = "right" } = {}) {
+        const a = S(aSrc), b = S(bSrc);
+        /* lui sort : léger recul + fondu, 0,28 s */
+        tl.to("#stage", { scale: 0.94, autoAlpha: 0, duration: 0.28, ease: "power2.in" }, a);
+        /* la scène entre en whip, 0,32 s */
+        tl.set("#takeover", { visibility: "visible" }, a);
+        show(sel, a);
+        /* 10/09 : sans `filter` (blur) — une propriété filter force le moteur à photographier chaque image
+           (capture lente : 12 min pour 100 s) ; le whip vit par scale + x + rotation + alpha */
+        tl.fromTo(sel,
+          { autoAlpha: 0.2, scale: 1.3, x: from === "right" ? 120 : -120, rotation: from === "right" ? 1.6 : -1.6 },
+          { autoAlpha: 1, scale: 1, x: 0, rotation: 0, duration: 0.32, ease: "power4.out", ...NO }, a);
+        /* RETOUR : la scène s'efface, lui revient, calé sur un mot */
+        tl.to(sel, { autoAlpha: 0, scale: 1.06, duration: 0.22, ease: "power2.in" }, b - 0.22);
+        tl.set(sel, { visibility: "hidden" }, b);
+        tl.set("#takeover", { visibility: "hidden" }, b);
+        tl.fromTo("#stage", { scale: 0.94, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.3, ease: "expo.out", ...NO }, b - 0.1);
+      }
+
+      /* ==========================================================
+         5. LES BEATS DE DÉMONSTRATION — à remplacer par le storyboard.
+            Le reel s'OUVRE SUR LUI (SOLO 0 → 3 s), jamais sur un plein écran.
+         ========================================================== */
+      /* AUTOUR 3 → 6,5 s : un chip dans la poche tête-gauche, un chiffre sur l'épaule droite,
+         un mot DERRIÈRE lui — jamais plus de deux éléments à la fois, jamais sur le visage. */
+      around("#d-chip", 3.0, 6.5, { entry: "pop" });
+      around("#d-stat", 3.8, 6.5, { entry: "pop", dim: 0 });
+      behind("#d-word", 4.6, 6.5, { entry: "slam", dim: 0 });
+
+      /* PLEIN ÉCRAN 6,5 → 9,5 s, puis RETOUR sur lui. La scène vit (la barre avance). */
+      takeover("#d-scene", 6.5, 9.5, { from: "right" });
+      tl.to("#d-scene .bar i", { scaleX: 1, duration: 2.4, ease: "none" }, S(6.5) + 0.4);
+
+      /* CTA 9,5 → 12 s : lui, un punch-in sur le mot-clé, le chip de pied. */
+      punch(9.6);
+      foot("#d-cta", 9.8, 12.0, { entry: "pop" });
+
+      /* ==========================================================
+         6. Durée = tl.duration(), calée sur la fin de la parole.
+         ========================================================== */
+      tl.set({}, {}, DUR);
+      if (tl.duration() > DUR + 0.001) console.warn("timeline plus longue que la parole : " + tl.duration().toFixed(2) + " > " + DUR.toFixed(2));
+
+      window.__timelines["reel"] = tl;
+    </script>
+  </body>
+</html>

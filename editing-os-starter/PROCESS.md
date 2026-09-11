@@ -13,11 +13,30 @@
    la phase 4.
 1. **Projet daté** : `video-projects/AA-MM-JJ-sujet/` (kebab-case).
 2. **Rush** : réencoder en H.264 (`crf 20`, faststart). Recadrer par **crop**
-   depuis le master 16:9 (jamais un scale qui déforme). Cadrage validé :
-   crop large type `1612:1080` pour que le visage soit grand une fois zoomé.
-3. **Transcription locale** : `node scripts/transcribe-whisper.mjs rush.mp4
-   --language fr` → mots avec `start`/`end`. VAD + align restent activés
-   (sans eux, les timestamps sont inutilisables).
+   depuis un master 16:9 (jamais un scale qui déforme) ; un rush caméra vertical
+   (canon : 1080×1920 à 25 i/s, rotation −90) se réencode tel quel. **Cadrage du
+   sujet (06/09, `formats/04-sujet-central.md`)** : visage au centre-haut, ligne
+   des yeux à 36–40 % de la hauteur, haut de tête jamais sous 300 px, rien
+   d'important dans les 220 px du haut, les 450 px du bas ni la colonne d'icônes
+   (x 980 → 1080, y 1000 → 1470). Mesurer avant de choisir `scale` et `y` :
+   **une image détourée par plan** (`node tools/cutout-frames.mjs` après le bake,
+   ≈ 1 min : haut de tête par plan, `EYES` prêt à coller, scale minimal) + une
+   image du rush pour calibrer l'offset des yeux — jamais le détourage du rush
+   entier (75 min mesurées le 09/09, retex du 10/09). Puis vérifier sur images :
+   `node scripts/safe-zone.mjs`.
+3. **Langue, puis transcription locale.** D'abord 15 s en `-l auto` (skill
+   `tunisien`, `references/transcription.md`) : la voix du créateur est en
+   français, en anglais ou en **derja tunisienne**, et `--language fr` sur de la
+   derja fabrique une boucle d'hallucination qui a l'air d'un transcript (mesuré
+   le 05/09). Puis la transcription **par morceaux coupés dans les grands
+   silences** (`tools/chunks.sh`, contexte remis à zéro à chaque morceau, VAD +
+   align actifs) — jamais le fichier entier : en derja il boucle après 40 s
+   (mesuré le 09/09), et le fichier entier est de toute façon plus lent. Avec le
+   **script du créateur** (brief § 1) une seule passe suffit ; sans script, une
+   réécoute en fenêtres de 7 s sur les zones floues seulement, pas trois
+   balayages. Déclarer dans `meta.json` : `verify.language`
+   et le mode des sous-titres `captions.script` (`franco` par défaut sur une voix
+   tunisienne, « à valider » tant que le créateur n'a pas tranché).
 
 ## Phase 1 — La parole (le montage invisible)
 
@@ -35,9 +54,26 @@
    laissant ~0.25s de respiration. Preuve : re-silencedetect → il ne doit
    rester que les respirations voulues. Le recalage de la composition passe
    par `shiftCut(t)` dans `ed()` + décalage des temps littéraux.
-7. **Détourage** : `npx hyperframes remove-background` → webm alpha.
-   Toute coupe ultérieure se fait sur le bake ET le webm avec le même EDL
-   (décodage `-c:v libvpx-vp9` pour préserver l'alpha).
+7. **Détourage ciblé** (10/09, retex validé par le créateur) : on ne détoure
+   plus le rush entier (75 min de CPU pour dix secondes d'usage, la carte
+   graphique n'aide pas ce modèle). Après le storyboard, `node tools/cutout-ranges.mjs
+   --range <nom>=<début>-<fin>` sur les seuls passages **DERRIÈRE** lui (mots,
+   halo), en secondes montées du bake, avec poignées → `assets/cut/<nom>.webm` et
+   les balises `<video>` à coller dans `#cutwrap`. Ça tourne pendant la
+   composition, ça ne bloque rien. Le voile des beats AUTOUR couvre toute
+   l'image (0,18), il n'a plus besoin du détourage.
+7bis. **Voix retraitée par le créateur** (10/09 : il a passé la voix montée de la
+   v1 dans un enhancer « qualité studio » et l'a renvoyée) : elle est faite sur
+   la timeline MONTÉE d'une version, pas sur le rush. D'abord `node
+   tools/align-check.mjs assets/voix.m4a <wav>` (0 ms attendu sur trois
+   fenêtres), puis `node tools/voice-from-enhanced.mjs <wav> assets/edl-v1.json
+   assets/edl.json` recoupe la voix améliorée pour le nouvel EDL sur la grille
+   25 i/s du bake, avec 15 ms de fondu par bord — à condition que les nouveaux
+   plans soient inclus dans les anciens (coupes plus serrées, retraits en plus ;
+   sinon repartir du rush). Garder l'EDL de chaque version (`edl-v1.json`).
+   Quand on serre les respirations, `node tools/edges.mjs` mesure le niveau dans
+   les 60 ms de chaque bord de plan : un bord au-dessus de −30 dB est une coupe
+   sur un mot.
 
 ## Phase 2 — Direction artistique (le designer qui écoute)
 
@@ -49,18 +85,28 @@
    composition. Il écoute phrase par phrase, applique la grille « chaque chose
    nommée → son visuel » (drag & drop, timeline animée, croix rouge, compteur,
    doc qui scrolle, mascotte, chat vivant...), vise un événement visuel
-   toutes les ~1-2 s, et produit un **storyboard timecodé** (t_in ancré sur les
-   mots, entrée/entretien/sortie, SFX).
+   toutes les ~1-2 s quand le script est dense — jamais pour remplir —, décide
+   pour chaque passage le **mode d'écran** (SOLO / AUTOUR / PLEIN ÉCRAN / RETOUR,
+   `formats/04-sujet-central.md`) et produit un **storyboard timecodé** (t_in ancré
+   sur les mots, mode et place, entrée/entretien/sortie, SFX). Voix en tunisien : le skill `tunisien`
+   est chargé avant ; la colonne « il dit » porte le verbatim Franco-Tunisien
+   reconstruit **et** sa glose FR, les visuels se décident sur le sens tunisien
+   (jamais sur la glose), les mots incertains `[?]` ne portent aucun beat, et le
+   mode des sous-titres (`captions.script`) est rappelé en tête du storyboard.
 7ter. **le créateur arbitre le storyboard** (il est le DA final), et seulement
    ensuite on compose. La v1 doit ressembler à une v10.
 
 ## Phase 3 — La composition (HyperFrames)
 
-8. **Layout canonique** (DESIGN.md « LA CARTE ») : split dès la frame 1,
-   carte arrondie tiers bas, deux couches (vidéo clippée + détourage libre)
-   aux transforms STRICTEMENT identiques, tête qui dépasse ~130px, ligne de
-   tête fixe (punch-ins avec compensation `y`), karaoké un mot au-dessus de
-   la tête — jamais sur le visage, jamais devant quelque chose.
+8. **Layout par défaut = format 04** (`formats/04-sujet-central.md`, 06/09) : lui
+   en plein cadre dès la frame 1, deux couches (fond + détourage) aux transforms
+   STRICTEMENT identiques, ligne des yeux à 732 (38 %) tenue par `frame()`
+   (un punch-in fait grandir le visage sans le déplacer), éléments légers dans
+   les poches autour de lui (`around()` / `behind()`), scènes plein écran
+   temporaires puis retour sur lui (`takeover()`), sous-titres sur la ligne
+   1180 sous le menton — jamais sur le visage, jamais devant quelque chose.
+   LA CARTE de DESIGN.md (split, carte tiers bas, karaoké dans l'interstice)
+   ne vaut que pour le format 01, sur demande explicite.
 9. **Beats** : un élément visuel nouveau chaque ~1-2s ; tout ce qui est
    nommé est MONTRÉ (fichier → drag & drop, opération de montage → timeline
    animée, outil rejeté → croix rouge dessinée, argent → compteur, doc →
@@ -69,21 +115,53 @@
    swaps karaoké.
 10. **Tous les temps de parole passent par `ed(src)`** (source → monté) ;
     les beats se calent sur les mots, jamais à l'oreille.
+10bis. **Contrôle de la composition dans le navigateur avant tout rendu** (10/09) :
+    la charger nue dans Playwright (script `check.mjs` : `window.__timelines`
+    enregistré, durée ≤ parole, zéro erreur de page, largeur de chaque groupe de
+    sous-titres mesurée par un `Range` ≤ 860 px, captures `tl.seek()` aux
+    moments clés, en avançant seulement) et regarder la planche de ces captures.
+    Trente secondes qui ont évité trois rendus le 09/09 : une ancre hors EDL
+    (rendu muet), un descendant `visibility: visible` qui perçait ses parents
+    cachés, un sous-titre de 923 px. Règle de code qui va avec : `visibility:
+    inherit`, jamais `visible`.
+10ter. **Pas de propriété `filter`** (blur, brightness, grayscale) dans une
+    composition de reel : elle force le moteur à photographier chaque image
+    (« fast capture: falling back to screenshot capture — filter:blur detected »,
+    12 min pour 100 s). Les flous se remplacent par des dégradés, les whips par
+    scale + x + rotation + alpha (scaffold mis à jour le 10/09). Gain à mesurer
+    sur le prochain rendu ; il porte sur le draft, la publication et les cinq
+    passes du paquet Premiere.
 
 ## Phase 4 — Vérification (avant TOUT envoi à Maison)
 
-11. `npx hyperframes lint` puis rendu draft.
+11. `npx hyperframes lint`, le contrôle 10bis, puis rendu draft. **Le draft ne
+    passe pas par `verify`** (10/09) : il n'est pas masterisé par définition et
+    la re-transcription ne dit rien de plus que la planche et le contrôle
+    Playwright. Sur le draft : planche safe-zone, `verif-montage`, images clés.
 12. **Regarder les frames** : extraire les moments clés (chaque beat, chaque
-    point de coupe, le cadrage carte) et les regarder vraiment. « Le CSS a
+    point de coupe, le cadrage) et les regarder vraiment. « Le CSS a
     l'air bon » n'est pas une vérification.
-13. `npm run verify -- --project <slug>` sur le rendu : re-transcription
-    (mots-sentinelles, répétitions, queue morte), zone haute jamais vide,
-    niveau audio. **Le script vit dans `scripts/`, pas dans le projet** — il
-    n'y a plus de copie à adapter. Sa configuration tient dans le `meta.json`
-    du projet (bloc `verify`) ; sans configuration il déduit ses
-    mots-sentinelles du transcript **du montage** (jamais du rush, qui
+12ter. **La safe zone, sur images** (06/09) : `node scripts/safe-zone.mjs
+    renders/<rendu>.mp4 --every 3` dessine sur une planche de contact les zones
+    que l'interface recouvre (rouge), la safe zone (vert), la cible des yeux
+    (cyan) et la ligne de sous-titre (jaune). Regarder toute la planche : le
+    visage dans le vert avec les yeux près du cyan, rien à lire dans le rouge,
+    le sous-titre sur sa ligne, aucun élément « autour » sur le visage. Le
+    premier reel est parti avec le menton sous la limite ; cette planche
+    existe pour que ça ne se reproduise pas.
+13. `npm run verify -- --project <slug> --master` **une fois, sur le master**
+    (10/09) : re-transcription (mots-sentinelles, répétitions, queue morte),
+    zone haute jamais vide, niveau audio. **Le script vit dans `scripts/`, pas
+    dans le projet** — il n'y a plus de copie à adapter. Sa configuration tient
+    dans le `meta.json` du projet (bloc `verify`) ; sans configuration il déduit
+    ses mots-sentinelles du transcript **du montage** (jamais du rush, qui
     contient les phrases coupées exprès), et il saute la zone haute sur un
-    format horizontal.
+    format horizontal. **Sur une voix tunisienne, les sentinelles sont les mots
+    latins exacts du script** (Claude, PFE, watermark…) : whisper réorthographie
+    les mots derja à chaque passe (كلاود / « Claude », بجيميني / بجميني —
+    deux faux échecs le 09/09) ; sans script, trois mots stables et le rapport se
+    lit en le sachant. La preuve qu'aucun mot n'est coupé reste la carte des
+    silences + `blanks --check`, pas whisper.
 12bis. **Le fps se déclare, il ne se tape pas.** `data-fps="30"` sur la racine
     de la composition, et `"fps": 30` dans le `meta.json`. **30 pour tous les
     verticaux** : c'est la cadence native d'Instagram et de TikTok, et le
@@ -102,6 +180,47 @@
     référence). C'est ce fichier qu'on envoie, pas le draft. Sur un draft, le
     niveau audio n'est qu'un avertissement — un draft n'est pas censé être
     masterisé.
+15 bis. **Le master part d'abord, le paquet Premiere Pro suit** (règles du créateur,
+    09 et 10/09/2026 : il ajuste lui-même le montage dans Premiere Pro 2021, et
+    il veut la vidéo dès qu'elle existe pour préparer ses retours). Dès que le
+    master passe `verify` et `verif-montage` : **l'envoyer avec sa planche
+    safe-zone**, puis seulement lancer le paquet, en tâche détachée, et livrer
+    le XML dans un second message. Le paquet : `node tools/premiere-cards.mjs` (cartes d'isolation, une
+    par couche), rendu de chaque carte en séquence PNG alpha à 25 i/s
+    (`npx hyperframes render -c premiere-cards/layer-<couche>.html --format
+    png-sequence --fps 25 --workers auto --browser-gpu -o renders/premiere/png/<couche>`,
+    ~4 min par couche, en tâche détachée), puis `node tools/premiere.mjs` →
+    `premiere/<seq>.xml` (FCP7 xmeml : rush plan par plan avec la Trajectoire
+    du cadrage et du zoom en images clés, détourage, un clip ProRes 4444 alpha
+    par beat, sous-titres, voix, SFX avec leur gain, master en référence),
+    `sous-titres.srt`, `README.md`. On envoie le XML et le README ; `media/`
+    (plusieurs Go) reste sur la machine. Les deux outils vivent dans le
+    scaffold du format 04 (`tools/`) ; recette détaillée dans le README généré.
+    **La structure validée par le créateur (10/09/2026, son export Premiere du XML
+    corrigé donnait le rendu du master)** : la piste du bas est le **fond noir
+    texturé** (`tools/bg-still.mjs`, image fixe sur toute la séquence) ; le rush et
+    le détourage sont **coupés pendant les scènes plein écran** (les `takeover(sel,
+    a, b)` de la composition, de S(a) à S(b) − 0,1) pour que la scène se pose sur
+    le fond comme dans l'original ; le voile est un **PNG noir opaque monté à
+    25 % d'opacité** (à 100 %, c'était un noir total sous le détourage sur chaque
+    beat AUTOUR : le premier export du créateur l'a montré). Tout est lu dans la
+    composition, plus rien n'est codé en dur. **`node tools/premiere-check.mjs`**
+    tourne à la fin de `premiere.mjs` et refuse le paquet si le fond, les trous
+    du rush et du détourage, l'opacité du voile ou un média manquent : un paquet
+    refusé ne part pas. Différences connues et acceptées : à l'entrée et à la
+    sortie d'une scène plein écran, Premiere coupe net là où l'original fait un
+    fondu de 0,28 s, et les whips n'ont pas de flou.
+
+> **Le budget temps (retex du 10/09, `video-projects/26-09-09-claude-watermark/RETEX.md`).**
+> Rush de deux minutes, script fourni : transcription par morceaux 12 min ·
+> EDL + bake 5 · cadrage sur une image par plan 2 · storyboard 12 · validation
+> du créateur · composition + détourage ciblé en parallèle 25 · contrôle
+> Playwright 3 · draft + planche 15 · publication + master + verify 22 · envoi,
+> puis paquet Premiere 35 min en fond. **≈ 1 h 35 de rush à master** (contre
+> 3 h 31 le 09/09, dont 75 min de détourage inutile et 35 min de veilles mal
+> réglées). Une correction après retours ≈ 25 min, sans repasser par un draft.
+> L'objectif fixé par le créateur : que le premier master soit quasi prêt à
+> publier, et que chaque vidéo rapproche de ce point.
 
 > Depuis le hub (`npm run os`), la phase 4 tient en un bouton : **Finaliser**
 > sur la page projet enchaîne rendu qualité publication, master et vérification
@@ -120,6 +239,9 @@
 
 ## Les pièges qui ont coûté des versions
 
+- Le sujet dans la zone que l'interface recouvre (premier reel du créateur,
+  format 01 : menton sous 1470 px, 06/09) → format 04 par défaut + planche
+  `scripts/safe-zone.mjs` regardée avant tout envoi.
 - Bake et composition sur des EDL différents (v10) → autoverify le détecte.
 - Couches détourage/vidéo à des scales différents → « 4 oreilles » (v12).
 - Sous-titres sur le visage quand la tête monte pendant un zoom (v12).

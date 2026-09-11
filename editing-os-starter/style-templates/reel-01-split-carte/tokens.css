@@ -12,9 +12,14 @@
   --reel-h: 1920px;
   --reel-fps: 30;
 
-  /* ---- zones interdites (UI Instagram) ---- */
-  --safe-top: 288px;     /* 15 % — rien d'indispensable au-dessus */
-  --safe-bottom: 192px;  /* 10 % — rien d'indispensable en dessous */
+  /* ---- zones interdites (UI Instagram) — image de référence du créateur, 06/09/2026 ---- */
+  --safe-top: 220px;       /* y 0 → 220 : barre de statut, titre « Reels » */
+  --safe-bottom: 450px;    /* y 1470 → 1920 : nom du compte, légende, son */
+  --safe-side: 35px;       /* marges latérales */
+  --safe-col-w: 100px;     /* colonne d'icônes à droite (x 980 → 1080)… */
+  --safe-col-top: 1000px;  /* …de y 1000 à 1470 (like, commentaire, partage) */
+  /* safe zone = x 35 → 1045 · y 220 → 1470, moins la colonne. Rien d'important en dehors,
+     et surtout pas le visage. Détail et méthode : formats/04-sujet-central.md */
 
   /* ---- accents (repris de 10-maison, redéclarés pour l'autonomie) ---- */
   --jaune: #FFD935;
@@ -56,6 +61,24 @@
   --f03-cta-at: 0.23;          /* CTA à 20–30 % de la durée */
   --f03-payoff-mute: 12s;      /* payoff muet : 8 à 12 s */
   --f03-screen-radius: 28px;   /* cartes de capture d'écran, acte 2 */
+
+  /* ============ FORMAT 04 · SUJET CENTRAL (le défaut depuis le 06/09/2026) ============ */
+  --f04-scale: 1.20;           /* plein cadre, origin 50% 0% ; y = eye-target − EYE_SRC × scale */
+  --f04-eye-target: 732px;     /* ligne des yeux, 38,1 % (plage tolérée 36–40 %) */
+  --f04-head-min: 300px;       /* haut de tête jamais au-dessus (plus haut = dans l'interface) */
+  --f04-punch-scale: 1.28;     /* punch-in, même formule : les yeux ne bougent pas */
+  --f04-face-x1: 330px;        /* boîte visage : rien ne la recouvre, jamais */
+  --f04-face-x2: 810px;
+  --f04-face-y1: 290px;
+  --f04-face-y2: 1020px;
+  --f04-cap-top: 1180px;       /* sous-titre, 61 %, sous le menton — ligne fixe dans tous les modes */
+  --f04-cap-size: 62px;
+  --f04-cap-maxw: 860px;       /* x 110 → 970 : la colonne d'icônes commence à 980 */
+  --f04-stage-top: 220px;      /* contenu lisible d'une scène plein écran */
+  --f04-stage-bottom: 1140px;
+  --f04-foot-top: 1290px;      /* chip de pied (CTA, source) */
+  --f04-foot-bottom: 1460px;
+  --f04-dim: 0.25;             /* voile sur le fond (pas sur lui) pendant un beat AUTOUR */
 }
 
 /* Le fond noir texturé commun aux trois formats. */

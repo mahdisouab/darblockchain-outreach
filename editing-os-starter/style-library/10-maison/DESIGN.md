@@ -246,7 +246,15 @@ Les templates vivent dans `cards/social/` (1080×1920, ids `maison.soc.*`).
 
 ### Layout canonique — LA CARTE (référence fournie par Maison, 17/08)
 
-Le format de ses reels publiés, désormais obligatoire :
+> **Depuis le 06/09/2026, LA CARTE n'est plus le layout par défaut.** Elle place le
+> visage dans les 450 px du bas que l'interface recouvre ; le créateur l'a refusée sur
+> son premier reel (« trop bas, trop près de la limite de la safe zone »). Le défaut est
+> `formats/04-sujet-central.md` : lui en plein cadre, yeux à 38 %, éléments légers
+> autour de lui, scènes plein écran temporaires, sous-titres sous le menton (ligne 1180).
+> LA CARTE ne vaut plus que pour le format 01, sur demande explicite. Ce qui suit est
+> conservé pour ce cas.
+
+Le format des reels publiés de l'ancien créateur :
 
 - **Jamais le créateur en plein cadre, pas même une frame.** Le split est là dès
   la frame 1 et jusqu'à la fin.
@@ -291,7 +299,8 @@ d'une capture réelle de l'outil comme référence avant de mocker.
 
 ### Layout canonique (historique)
 
-- **Le split screen est l'ÉTAT PAR DÉFAUT du reel** (confirmé au tournage,
+- **Le split screen était l'ÉTAT PAR DÉFAUT du reel** — jusqu'au 06/09/2026 : le
+  défaut est désormais le format 04, lui en plein cadre (confirmé au tournage,
   2026-08-16 : c'est ce qui fait mouche chez Nathan/Nick) : illustration en
   haut ~58%, speaker en bas ~40%, en continu. Le plein cadre speaker est
   l'exception, réservé à l'accroche et au CTA. La zone haute ne se vide
@@ -310,9 +319,11 @@ d'une capture réelle de l'outil comme référence avant de mocker.
 - **Groupes de 1 à 4 mots, remplacés en bloc toutes les 0,6-1,2 s** (tranché par
   le créateur le 18/08 depuis ses 6 reels publiés, mesures dans
   `EditingOS-dist/formats/MESURES.md`). Le groupe se coupe sur le SENS, pas sur le
-  compte de mots. Blanc gras 64-66px, ombre portée douce, posé au-dessus de la
-  ligne de tête (top 985 avec tête plafonnée à ~y1115). Mots-clés préfixés `*` →
-  jaune. (Remplace la règle mot-à-mot héritée de Nathan/Nick.)
+  compte de mots. Blanc gras 62-66px, ombre portée douce. Position selon le
+  format : **04 (défaut) → ligne 1180 sous le menton**, ≤ 860 px de large, halo
+  sombre ; 01 → au-dessus de la ligne de tête (top 985 avec tête plafonnée à
+  ~y1115). Mots-clés préfixés `*` → jaune. (Remplace la règle mot-à-mot héritée
+  de Nathan/Nick.)
 - **Jamais sur le visage, jamais devant quoi que ce soit** (règle le créateur
   17/08) : un sous-titre ne recouvre ni le visage ni un élément visuel. Si
   la place manque, c'est le layout qu'on ajuste, pas la règle.

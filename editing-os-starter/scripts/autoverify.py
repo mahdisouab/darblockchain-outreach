@@ -233,7 +233,17 @@ def main():
         out = sh(whisper).stdout
         os.unlink(wav)
     text = " ".join(re.sub(r"\[.*?\]", "", l).strip() for l in out.splitlines() if l.strip())
-    norm = text.lower()
+    # Normalisation commune au rendu et aux mots cherchés (ajoutée le 05/09 sur un reel en
+    # derja) : whisper varie l'orthographe d'une passe à l'autre — hamza sur l'alef
+    # (الإنترنت / الانترنت), ta marbuta, alef maqsura, harakat. Sans ça, six mots
+    # bien prononcés étaient signalés « manquants ». Les accents latins sont retirés
+    # des deux côtés à la fois, donc le français n'y perd rien.
+    import unicodedata
+    def norm_text(t):
+        t = unicodedata.normalize("NFD", str(t or "").lower())
+        t = "".join(c for c in t if not unicodedata.combining(c) and c != "ـ")
+        return t.translate(str.maketrans({"إ": "ا", "أ": "ا", "آ": "ا", "ٱ": "ا", "ة": "ه", "ى": "ي"}))
+    norm = norm_text(text)
     if audio:
         print("— transcript du rendu —\n" + text.strip()[:600] + "\n")
 
@@ -244,7 +254,7 @@ def main():
     if sentinels:
         print(f"— {len(sentinels)} mots-sentinelles ({origin}) —\n")
         for s in sentinels:
-            alts = [s.lower()] + (["cloud", "claude"] if s.lower() in ("claude", "cloud") else [])
+            alts = [norm_text(s)] + (["cloud", "claude"] if s.lower() in ("claude", "cloud") else [])
             if any(a in norm for a in alts):
                 oks.append(f"mot présent : {s}")
             else:
@@ -258,13 +268,13 @@ def main():
     if forbidden:
         print(f"— {len(forbidden)} mots interdits (meta.json) —\n")
         for w in forbidden:
-            if re.search(r"\b" + re.escape(w.lower()) + r"\b", norm):
+            if re.search(r"\b" + re.escape(norm_text(w)) + r"\b", norm):
                 fails.append(f"MOT INTERDIT PRÉSENT : « {w} » — la créa n'est pas non datée")
         if not any("MOT INTERDIT" in f for f in fails):
             oks.append(f"aucun des {len(forbidden)} mots interdits (date) n'est prononcé")
 
     for ph in (cfg.get("forbiddenRepeats", []) if audio else []):
-        n = norm.count(ph.lower())
+        n = norm.count(norm_text(ph))
         if n > 1:
             fails.append(f"RÉPÉTITION : « {ph} » apparaît {n} fois (garder la dernière prise)")
         else:
